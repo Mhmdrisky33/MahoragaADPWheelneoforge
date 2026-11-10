@@ -56,18 +56,19 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.enchanting.EnchantmentLevelSetEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerSleepInBedEvent;
+import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -1001,8 +1002,7 @@ public final class AdaptationManager {
 
     // ==================== 事件：防御（挨打）====================
 
-    @SubscribeEvent
-    public static void onAttack(LivingAttackEvent event) {
+    private static void onAttack(LivingIncomingDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
         if (!WheelHandler.hasWheel(player)) return;
@@ -1046,7 +1046,7 @@ public final class AdaptationManager {
             return;
         }
         // 防御：**满 100% 才彻底免疫** —— 在这一步就取消掉，连抖动和屏幕发红都没有。
-        // （0~100% 之间的渐进减伤放在 LivingHurtEvent 里做，那个事件才允许改伤害数值。）
+        // （0~100% 之间的渐进减伤放在 LivingIncomingDamageEvent 里做，那个事件才允许改伤害数值。）
         if (data.get(Track.DEFENSE, defenseKey) >= COMPLETE) {
             event.setCanceled(true);
             swingGuard(player);          // 已经彻底适应 → 顺手挥手拨开（魔虚罗同款动作）
@@ -1056,7 +1056,7 @@ public final class AdaptationManager {
     // ==================== 事件：攻击（打人）====================
 
     /**
-     * 攻击适应用 **AttackEntityEvent**，不用 LivingHurtEvent。
+     * 攻击适应用 **AttackEntityEvent**，不用 LivingIncomingDamageEvent。
      * Hurt 事件要求"目标真的掉血了"才触发 —— 空手打、目标免疫、被别的模组拦掉都会漏；
      * AttackEntityEvent 是"玩家挥出一次攻击"就一定有。
      */
@@ -1087,14 +1087,18 @@ public final class AdaptationManager {
 
     /** 攻击适应的四档：普通 → 法伤 → 真伤 → 极强（靠伤害倍率体现）。 */
     @SubscribeEvent
-    public static void onHurt(LivingHurtEvent event) {
+    public static void onHurt(LivingIncomingDamageEvent event) {
+        // NeoForge 1.21.1 合并了旧 LivingAttackEvent / LivingHurtEvent 的入口。
+        // 先执行旧攻击阶段，再执行旧受伤阶段，确保免疫逻辑先于渐进减伤。
+        onAttack(event);
+        if (event.isCanceled()) return;
         LivingEntity victim = event.getEntity();
         if (victim.level().isClientSide) return;
 
         DamageSource source = event.getSource();
 
         // —— 我是挨打的一方：**渐进式减伤**
-        // 25% 减掉四分之一、75% 减掉四分之三、100% 才彻底免疫（那一步在 LivingAttackEvent 就取消了）。
+        // 25% 减掉四分之一、75% 减掉四分之三、100% 才彻底免疫（那一步在 LivingIncomingDamageEvent 就取消了）。
         // （原来的"举剑格挡"连同 75% 那一档已经删掉 —— 右键让给了特殊能力。
         //   想减伤还有 GuardSkill：手持退魔剑 + 潜行 = 减伤 50% + 自动反击，那个是独立事件，不在这里。）
         if (victim instanceof Player holder && WheelHandler.hasWheel(holder)) {
@@ -1175,13 +1179,13 @@ public final class AdaptationManager {
     /**
      * 解析线的**快照点** —— 每次对生物造成伤害后，记下"打之前它多少血 + 这一刀多少伤害 + 它在哪"。
      *
-     * 🔴 **必须用 `LivingDamageEvent`，不能用 `LivingHurtEvent`**：
+     * 🔴 **必须用 `LivingDamageEvent`，不能用 `LivingIncomingDamageEvent`**：
      * Hurt 那一刻伤害**还没结算**（护甲、附魔都还没算），读到的血量是攻击前的，
      * 拿它去算"实际掉血"会永远得到 0，标签一个都判不出来。
      * Damage 事件是"护甲减伤之后、setHealth 之前"——正好是我们要的那一拍。
      */
     @SubscribeEvent
-    public static void onDamageDealt(LivingDamageEvent event) {
+    public static void onDamageDealt(LivingDamageEvent.Post event) {
         LivingEntity victim = event.getEntity();
         if (victim.level().isClientSide) return;
 
@@ -1190,7 +1194,7 @@ public final class AdaptationManager {
 
         if (source.getEntity() instanceof Player player && victim != player
                 && WheelHandler.hasWheel(player)) {
-            AnalyzeTracker.onDamage(player, victim, event.getAmount());
+            AnalyzeTracker.onDamage(player, victim, event.getNewDamage());
         }
     }
 
@@ -1201,7 +1205,7 @@ public final class AdaptationManager {
      *   减伤比例 f = min(20, max(甲/5, 甲 − 伤害/(2 + 韧性/4))) / 25
      * 于是原始伤害 = 当前伤害 / (1 − f)。
      */
-    private static void restoreArmorPenalty(LivingEntity victim, LivingHurtEvent event) {
+    private static void restoreArmorPenalty(LivingEntity victim, LivingIncomingDamageEvent event) {
         double armor = victim.getArmorValue();
         if (armor <= 0.0D) return;
 
@@ -1433,7 +1437,7 @@ public final class AdaptationManager {
     }
 
     @SubscribeEvent
-    public static void onSleep(PlayerSleepInBedEvent event) {
+    public static void onSleep(CanPlayerSleepEvent event) {
         clearProgress(event.getEntity());
     }
 
@@ -1517,10 +1521,9 @@ public final class AdaptationManager {
     // ==================== 每秒：日常动作 / 衰减 / 效果 / 属性 ====================
 
     @SubscribeEvent
-    public static void onPlayerTick(net.neoforged.neoforge.event.TickEvent.PlayerTickEvent event) {
-        if (event.phase != net.neoforged.neoforge.event.TickEvent.Phase.END) return;
-
-        Player player = event.player;
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        
+        Player player = event.getEntity();
         if (player.level().isClientSide) return;
 
         if (!WheelHandler.hasWheel(player)) return;
@@ -1640,9 +1643,10 @@ public final class AdaptationManager {
      * 里面**第一句就是查"有没有伤口"**，没伤口的生物一次 NBT 查询就返回 —— 开销可以忽略。
      */
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
-        EternalBleeding.tick(event.getEntity());
-        SignatureAttack.tickServants(event.getEntity());   // 僵尸援军 30 秒到点自己消散
+    public static void onLivingTick(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof LivingEntity living)) return;
+        EternalBleeding.tick(living);
+        SignatureAttack.tickServants(living);   // 僵尸援军 30 秒到点自己消散
     }
 
     /** 伤口还在，就不许摘掉流血效果 —— 牛奶、`/effect clear` 一律无效，这才叫"永恒"。 */

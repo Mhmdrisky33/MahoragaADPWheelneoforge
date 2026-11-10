@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -256,11 +256,10 @@ public final class AnalyzeNarrator {
 
     /** 每 tick 推一次队列（自己挂事件，省得去改 AdaptationManager）。 */
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        if (event.player.level().isClientSide) return;
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+                if (event.getEntity().level().isClientSide) return;
 
-        tick(event.player);
+        tick(event.getEntity());
     }
 
     public static void tick(Player player) {
