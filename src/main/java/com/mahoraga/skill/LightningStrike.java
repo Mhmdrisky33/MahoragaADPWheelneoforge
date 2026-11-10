@@ -64,7 +64,7 @@ public final class LightningStrike {
         boolean strong = progress >= TIER_2;
 
         // ① 火焰 —— 直接给目标点着
-        victim.setSecondsOnFire(strong ? FIRE_SECONDS_T2 : FIRE_SECONDS);
+        victim.setRemainingFireTicks((strong ? FIRE_SECONDS_T2 : FIRE_SECONDS) * 20);
 
         // ② 雷电 —— 一记无视护甲的附加伤害
         float base = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE);
