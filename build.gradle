@@ -31,11 +31,13 @@ repositories {
 
 dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 21
+    options.compilerArgs += ["-AoutRefMap=mahoraga.refmap.json"]
 }
 
 tasks.named('processResources', ProcessResources).configure {
