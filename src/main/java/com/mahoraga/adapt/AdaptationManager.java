@@ -1388,7 +1388,7 @@ public final class AdaptationManager {
 
     /** 这一发算不算"**投**出去的东西"。 */
     private static boolean isThrown(Projectile projectile) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(projectile.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType());
 
         return id != null && THROWN_ITEMS.contains(id.getPath());
     }
@@ -1653,7 +1653,7 @@ public final class AdaptationManager {
     /** 伤口还在，就不许摘掉流血效果 —— 牛奶、`/effect clear` 一律无效，这才叫"永恒"。 */
     @SubscribeEvent
     public static void onBleedRemove(MobEffectEvent.Remove event) {
-        if (event.getEffect() != ModEffects.BLEEDING.get()) return;
+        if (event.getEffect() != ModEffects.BLEEDING) return;
         if (!EternalBleeding.hasWound(event.getEntity())) return;
 
         event.setCanceled(true);
@@ -1872,7 +1872,7 @@ public final class AdaptationManager {
         if (eat < EAT_BUFF) return;
 
         int pct = percent(eat);
-        MobEffect buff = EatAdaptation.rollBuff();
+        Holder<MobEffect> buff = EatAdaptation.rollBuff();
 
         // 满 200% → I 级 10 秒；400% → II 级 20 秒；600%+ → III 级 30 秒
         player.addEffect(new MobEffectInstance(buff,
@@ -1880,7 +1880,7 @@ public final class AdaptationManager {
                 true, false, true));
 
         player.displayClientMessage(Component.translatable("chat.mahoraga.eat.buff",
-                        Component.translatable(buff.getDescriptionId()))
+                        Component.translatable(buff.value().getDescriptionId()))
                 .withStyle(ChatFormatting.GOLD), true);
     }
 
@@ -2067,7 +2067,7 @@ public final class AdaptationManager {
      * 25/50/100/200/…/800 依次对应 I~X 级，一级一档；1000% 那一段只加缓冲不再加等级
      * （X 级已经是原版能正常显示的最高等级，再加就会把翻译键名原样打出来）。
      */
-    private static void applyByProgress(Player player, float progress, MobEffect effect) {
+    private static void applyByProgress(Player player, float progress, Holder<MobEffect> effect) {
         int pct = percent(progress);
         int level = 0;
 
