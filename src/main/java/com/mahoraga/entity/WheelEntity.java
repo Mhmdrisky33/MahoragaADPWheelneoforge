@@ -95,7 +95,6 @@ public class WheelEntity extends Entity implements GeoEntity {
         return true;
     }
 
-    @Override
     public double getMyRidingOffset() {
         return 0.5D;
     }
