@@ -49,7 +49,7 @@ public final class MaterialPhase {
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
 
-        Player player = event.player;
+        Player player = event.getEntity();
         if (player.level().isClientSide) return;
         if (!AdaptationManager.hasSuffocationPhase(player)) return;
         if (!(player.level() instanceof ServerLevel level)) return;
