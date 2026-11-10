@@ -1568,9 +1568,9 @@ public final class AdaptationManager {
 
         // 2) 负面药水效果 → 战斗轨（静默，满了直接免疫这一类）
         for (MobEffectInstance instance : player.getActiveEffects()) {
-            if (instance.getEffect().isBeneficial()) continue;
+            if (instance.getEffect().value().isBeneficial()) continue;
 
-            gainEffect(player, AdaptationKeys.effectKey(instance.getEffect()), now);
+            gainEffect(player, AdaptationKeys.effectKey(instance.getEffect().value()), now);
         }
 
         // 3) 推进状态机 —— 两条轨道各走各的，别混在一起
@@ -1810,7 +1810,7 @@ public final class AdaptationManager {
 
     /** 跑步奖励：把台阶高度加成挂上 / 摘掉。 */
     private static void applyStepHeight(Player player, boolean active) {
-        AttributeInstance instance = player.getAttribute(NeoForgeMod.STEP_HEIGHT_ADDITION);
+        AttributeInstance instance = player.getAttribute(Attributes.STEP_HEIGHT);
         if (instance == null) return;
 
         AttributeModifier existing = instance.getModifier(STEP_MODIFIER);
@@ -1827,7 +1827,7 @@ public final class AdaptationManager {
     /**
      * 跳跃奖励：把"**重力减少 15%**"挂上 / 摘掉。
      *
-     * ⚠️ 用 `NeoForgeMod.ENTITY_GRAVITY`（Forge 加的属性），**不是** `Attributes` 里的 ——
+     * ⚠️ 用 `Attributes.GRAVITY`（Forge 加的属性），**不是** `Attributes` 里的 ——
      * 原版 1.20.1 根本没有重力属性，别去 `Attributes` 里找。
      */
     private static void applyGravity(Player player, boolean active) {
@@ -1861,7 +1861,7 @@ public final class AdaptationManager {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
         if (!WheelHandler.hasWheel(player)) return;
-        if (!event.getItem().isEdible()) return;
+        if (event.getItem().getFoodProperties(player) == null) return;
 
         AdaptationData data = data(player);
         long now = player.level().getGameTime();
