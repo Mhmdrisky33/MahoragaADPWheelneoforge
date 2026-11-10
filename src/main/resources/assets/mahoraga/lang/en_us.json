@@ -13,7 +13,6 @@
   "chat.mahoraga.guard.off": "Blade of Exorcism - Guard released",
   "entity.mahoraga.wheel": "Mahoraga's Wheel",
   "key.categories.mahoraga": "Mahoraga",
-
   "mahoraga.track.defense": "Defensive adaptation",
   "mahoraga.track.attack": "Offensive adaptation",
   "mahoraga.track.daily": "Habitual adaptation",
@@ -194,5 +193,12 @@
   "chat.mahoraga.crack.got": "✦ Analyzed target %s - adapted ability: %s",
   "command.mahoraga.analyze.line": "Analysis: %s",
   "command.mahoraga.analyze.entry": "%s (%s) -> %s",
-  "command.mahoraga.analyze.none": "(nothing analyzed yet)"
+  "command.mahoraga.analyze.none": "(nothing analyzed yet)",
+  "key.mahoraga.hud_settings": "Open Mahoraga HUD Settings",
+  "screen.mahoraga.hud.title": "Mahoraga HUD Settings",
+  "screen.mahoraga.hud.icon": "Wheel icon: %s",
+  "screen.mahoraga.hud.entries": "Adaptation list: %s",
+  "screen.mahoraga.hud.reset": "Reset",
+  "screen.mahoraga.hud.current": "Position: X %s / Y %s   Scale: %s",
+  "screen.mahoraga.hud.hint": "Press O in-game to reopen these settings."
 }
