@@ -45,7 +45,7 @@ import java.util.UUID;
 @EventBusSubscriber(modid = MahoragaMod.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class SignatureDefense {
     /** 猪灵蛮兵：护甲翻倍的倍率修饰符。`/mahoraga wheel reset` 摘属性要用，所以是 public。 */
-    public static final UUID BRUTE_ARMOR = UUID.fromString("2f47c1a9-6b0e-4d38-9d21-5c8e7a304f61");
+    public static final ResourceLocation BRUTE_ARMOR = ResourceLocation.fromNamespaceAndPath("mahoraga", "brute_armor");
     /** 短距瞬移的冷却用的假物品。 */
     private static final int TELEPORT_COOLDOWN = 20;
     private static final double TELEPORT_RANGE = 8.0D;
@@ -93,8 +93,8 @@ public final class SignatureDefense {
         if (instance == null) return;
 
         for (AttributeModifier modifier : instance.getModifiers().stream().toList()) {
-            if (modifier.getAmount() < 0.0D) {
-                instance.removeModifier(modifier.getId());
+            if (modifier.amount() < 0.0D) {
+                instance.removeModifier(modifier.id());
             }
         }
     }
@@ -118,8 +118,7 @@ public final class SignatureDefense {
         }
         if (existing != null) return;
 
-        instance.addTransientModifier(new AttributeModifier(BRUTE_ARMOR, "mahoraga_brute_armor",
-                1.0D, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        instance.addTransientModifier(new AttributeModifier(BRUTE_ARMOR, 1.0D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 
     /** 卫道士：盾牌永不被破 —— 不停地清掉破盾冷却。 */
@@ -157,7 +156,7 @@ public final class SignatureDefense {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!hasComplete(player, "minecraft:vindicator")) return;
 
-        event.setShieldTakesDamage(false);
+        event.setShieldDamage(0.0F);
     }
 
     // ==================== 不死图腾 ====================
