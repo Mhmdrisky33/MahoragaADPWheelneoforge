@@ -204,7 +204,7 @@ public final class AdaptationKeys {
     public static final String SLASH_UNLOCK = UNLOCK_PREFIX + "slash";
 
     public static String effectKey(MobEffect effect) {
-        ResourceLocation id = BuiltInRegistries.MOB_EFFECTS.getKey(effect);
+        ResourceLocation id = BuiltInRegistries.MOB_EFFECT.getKey(effect);
         return EFFECT_PREFIX + (id == null ? "unknown" : id.toString());
     }
 
@@ -271,7 +271,7 @@ public final class AdaptationKeys {
     }
 
     private static String entityKey(EntityType<?> type) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(type);
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         return "entity:" + (id == null ? "unknown" : id.toString());
     }
 
@@ -291,7 +291,7 @@ public final class AdaptationKeys {
 
         if (key.startsWith("entity:")) {
             ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-            EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPES.getValue(id);
+            EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPE.getValue(id);
             return type == null ? Component.literal(key.substring(7)) : type.getDescription();
         }
         if (key.startsWith("damage:")) {
@@ -322,7 +322,7 @@ public final class AdaptationKeys {
         }
         if (key.startsWith(EFFECT_PREFIX)) {
             ResourceLocation id = ResourceLocation.tryParse(key.substring(EFFECT_PREFIX.length()));
-            MobEffect effect = id == null ? null : BuiltInRegistries.MOB_EFFECTS.getValue(id);
+            MobEffect effect = id == null ? null : BuiltInRegistries.MOB_EFFECT.getValue(id);
             return effect == null
                     ? Component.literal(key.substring(EFFECT_PREFIX.length()))
                     : Component.translatable(effect.getDescriptionId());
