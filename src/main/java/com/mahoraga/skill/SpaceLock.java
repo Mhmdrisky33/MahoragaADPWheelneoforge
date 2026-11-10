@@ -34,7 +34,7 @@ public final class SpaceLock {
     }
 
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+    public static void onLivingTick(EntityTickEvent.Post event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide) return;
 
