@@ -24,6 +24,16 @@ neoForge {
     }
 }
 
+// The old dev.mahoraga prototype duplicates the mahoraga mod entrypoint and registry IDs.
+// Keep its source in the repository for reference, but do not compile/package it.
+sourceSets {
+    main {
+        java {
+            exclude 'dev/mahoraga/**'
+        }
+    }
+}
+
 repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven' }
     mavenCentral()
