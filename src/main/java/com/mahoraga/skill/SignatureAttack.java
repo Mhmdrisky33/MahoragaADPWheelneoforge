@@ -10,6 +10,7 @@ import com.mahoraga.registry.ModDamageTypes;
 import com.mahoraga.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -431,7 +432,7 @@ public final class SignatureAttack {
 
     // ==================== 各种手段 ====================
 
-    private static void effect(LivingEntity target, MobEffect effect, int duration, int amplifier) {
+    private static void effect(LivingEntity target, Holder<MobEffect> effect, int duration, int amplifier) {
         target.addEffect(new MobEffectInstance(effect, duration, amplifier));
     }
 
@@ -487,7 +488,7 @@ public final class SignatureAttack {
 
     /** 女巫：附带一个**随机负面**。 */
     private static void randomDebuff(LivingEntity target) {
-        MobEffect[] pool = {
+        Holder<MobEffect>[] pool = new Holder[]{
                 MobEffects.POISON, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.WEAKNESS,
                 MobEffects.DIG_SLOWDOWN, MobEffects.BLINDNESS, MobEffects.HUNGER,
                 MobEffects.CONFUSION, MobEffects.UNLUCK
@@ -496,7 +497,7 @@ public final class SignatureAttack {
     }
 
     private static String idOf(Entity entity) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(entity.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         return id == null ? "" : id.toString();
     }
 
