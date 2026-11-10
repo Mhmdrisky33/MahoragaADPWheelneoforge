@@ -93,13 +93,13 @@ public final class EternalBleeding {
      */
     public static void tick(LivingEntity victim) {
         if (victim.level().isClientSide) return;
-        if (!victim.hasEffect(ModEffects.BLEEDING.get())) return;
+        if (!victim.hasEffect(ModEffects.BLEEDING)) return;
 
         int level = level(victim);
 
         // 效果还在、伤口却没了（正常情况下会被 Remove 事件拦住，这里是兜底）
         if (level <= 0) {
-            victim.removeEffect(ModEffects.BLEEDING.get());
+            victim.removeEffect(ModEffects.BLEEDING);
             return;
         }
 
@@ -141,7 +141,7 @@ public final class EternalBleeding {
     /** 伤口清空 + 摘掉效果（目标死掉、或者效果自己没了的时候调）。 */
     public static void clear(LivingEntity victim) {
         victim.getPersistentData().remove(ROOT);
-        victim.removeEffect(ModEffects.BLEEDING.get());
+        victim.removeEffect(ModEffects.BLEEDING);
     }
 
     /** 调试用：谁砍的。 */
