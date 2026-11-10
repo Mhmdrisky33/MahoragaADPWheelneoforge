@@ -12,7 +12,7 @@ import java.util.List;
 
 public record DarkSightPacket(List<Integer> hostile, List<Integer> passive, List<Integer> players, List<Integer> elite) implements CustomPacketPayload {
     public static final Type<DarkSightPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "dark_sight"));
-    public static final StreamCodec<FriendlyByteBuf, DarkSightPacket> STREAM_CODEC = StreamCodec.of(DarkSightPacket::encode, DarkSightPacket::decode);
+    public static final StreamCodec<FriendlyByteBuf, DarkSightPacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), DarkSightPacket::decode);
 
     private static List<Integer> readIds(FriendlyByteBuf buf) {
         int count = buf.readVarInt();
