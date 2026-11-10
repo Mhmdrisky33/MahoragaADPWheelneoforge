@@ -45,12 +45,12 @@ public abstract class ProjectileHomingMixin {
      *
      * ⚠️ 只会生效一次（内部有标记），不是每 tick 都乘。
      */
-    @Inject(method = "tick", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"), remap = false)
     private void mahoraga$speedBoost(CallbackInfo ci) {
         ProjectileHoming.applySpeedBoost((Projectile) (Object) this);
     }
 
-    @Inject(method = "tick", at = @At("TAIL"))
+    @Inject(method = "tick", at = @At("TAIL"), remap = false)
     private void mahoraga$homingTick(CallbackInfo ci) {
         Projectile self = (Projectile) (Object) this;
 
