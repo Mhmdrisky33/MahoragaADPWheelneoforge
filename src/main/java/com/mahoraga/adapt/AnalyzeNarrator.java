@@ -220,7 +220,9 @@ public final class AnalyzeNarrator {
     private static List<String> labelsOf(LivingEntity target) {
         List<String> out = new ArrayList<>();
 
-        BuiltInRegistries.ENTITY_TYPE.getHolder(target.getType()).ifPresent(holder ->
+        BuiltInRegistries.ENTITY_TYPE.getResourceKey(target.getType())
+                .flatMap(BuiltInRegistries.ENTITY_TYPE::getHolder)
+                .ifPresent(holder ->
                 holder.tags().forEach(tag -> {
                     String word = TAG_WORDS.get(tag.location().getPath());
 
