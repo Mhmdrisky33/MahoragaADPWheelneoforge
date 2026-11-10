@@ -343,7 +343,7 @@ public final class WheelSymbiosis {
         }
 
         // 进出用同一个音效，靠音调区分（钻进去偏高、冒出来偏低）
-        level.playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE,
+        level.playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE.value(),
                 SoundSource.PLAYERS, 0.8F, in ? 1.25F : 0.85F);
     }
 
