@@ -527,7 +527,7 @@ public final class SignatureAttack {
         public static void onTargetChange(LivingChangeTargetEvent event) {
             if (!(event.getEntity() instanceof Mob mob)) return;
             if (!mob.getTags().contains(SERVANT_TAG)) return;
-            if (event.getNewTarget() instanceof Player) event.setCanceled(true);
+            if (event.getNewAboutToBeSetTarget() instanceof Player) event.setCanceled(true);
         }
     }
 }
