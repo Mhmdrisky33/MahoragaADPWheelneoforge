@@ -85,9 +85,9 @@ public final class BladeHandler {
     }
 
     /** 造一把新的退魔之剑 —— **自带亡灵杀手 V**。 */
-    public static ItemStack newBlade() {
+    public static ItemStack newBlade(Player player) {
         ItemStack stack = new ItemStack(ModItems.MAHORAGA_BLADE.get());
-        Holder<Enchantment> smite = net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getHolderOrThrow(Enchantments.SMITE);
+        Holder<Enchantment> smite = player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SMITE);
         EnchantmentHelper.updateEnchantments(stack, enchantments -> enchantments.set(smite, SMITE_LEVEL));
         return stack;
     }
@@ -121,7 +121,7 @@ public final class BladeHandler {
 
     /** 把剑塞进背包；塞不下就丢在脚边（绝不能凭空消失）。 */
     private static void give(Player player) {
-        ItemStack stack = newBlade();
+        ItemStack stack = newBlade(player);
 
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
