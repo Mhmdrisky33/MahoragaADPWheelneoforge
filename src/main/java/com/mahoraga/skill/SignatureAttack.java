@@ -413,7 +413,7 @@ public final class SignatureAttack {
         level.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z,
                 8 + (int) (power * 3.0F), power * 0.25D, 0.4D, power * 0.25D, 0.02D);
-        level.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE,
+        level.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.PLAYERS, 0.6F, 1.35F);
 
         DamageSource source = ModDamageTypes.spell(player);
@@ -457,7 +457,7 @@ public final class SignatureAttack {
     /** 卫道士：随便什么攻击都能**破盾**（对玩家目标而言）。 */
     private static void breakShield(LivingEntity target) {
         if (target instanceof Player blocker && blocker.isBlocking()) {
-            blocker.disableShield(true);
+            blocker.disableShield();
         }
     }
 
