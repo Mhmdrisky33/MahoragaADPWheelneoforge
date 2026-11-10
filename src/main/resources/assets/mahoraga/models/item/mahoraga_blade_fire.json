@@ -1,0 +1,7 @@
+{
+  "parent": "mahoraga:custom/mahoraga_blade",
+  "textures": {
+    "0": "mahoraga:item/mahoraga_blade_fire",
+    "particle": "mahoraga:item/mahoraga_blade_fire"
+  }
+}

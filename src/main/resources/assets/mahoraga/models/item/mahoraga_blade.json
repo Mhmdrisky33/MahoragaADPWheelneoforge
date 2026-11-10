@@ -1,0 +1,21 @@
+{
+  "parent": "mahoraga:custom/mahoraga_blade",
+  "textures": {
+    "0": "mahoraga:item/mahoraga_blade",
+    "particle": "mahoraga:item/mahoraga_blade"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "mahoraga:item/mahoraga_blade_fire"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "mahoraga:item/mahoraga_blade_frost"
+    }
+  ]
+}
