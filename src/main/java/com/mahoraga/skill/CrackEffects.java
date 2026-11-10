@@ -4,6 +4,7 @@ import com.mahoraga.adapt.AnalyzeData;
 import com.mahoraga.registry.ModDamageTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -63,9 +64,9 @@ public final class CrackEffects {
     private static final double MINION_RANGE = 16.0D;
 
     /** `/mahoraga wheel reset` 摘属性要用，所以是 public。 */
-    public static final UUID ID_MAX_HEALTH = UUID.fromString("8a1f5c30-2d47-4b19-9e63-71c0a4f8d2b5");
-    public static final UUID ID_ARMOR = UUID.fromString("c4e29b71-5f83-4a06-8d1c-3b7e5a902f64");
-    public static final UUID ID_ATTACK = UUID.fromString("17d6a8c2-90b4-4e75-a3f8-6c2d1e804b39");
+    public static final ResourceLocation ID_MAX_HEALTH = ResourceLocation.fromNamespaceAndPath("mahoraga", "crack_max_health");
+    public static final ResourceLocation ID_ARMOR = ResourceLocation.fromNamespaceAndPath("mahoraga", "crack_armor");
+    public static final ResourceLocation ID_ATTACK = ResourceLocation.fromNamespaceAndPath("mahoraga", "crack_attack");
 
     private CrackEffects() {
     }
@@ -107,7 +108,7 @@ public final class CrackEffects {
 
     private static void applyBuffs(Player player, AnalyzeData data, String entityId) {
         for (String id : data.buffs(entityId)) {
-            MobEffect effect = BuiltInRegistries.MOB_EFFECTS.getValue(ResourceLocation.tryParse(id));
+            Holder<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.tryParse(id)).orElse(null);
             if (effect == null) continue;
 
             player.addEffect(new MobEffectInstance(effect, BUFF_TICKS, 0, true, false, true));
@@ -174,16 +175,16 @@ public final class CrackEffects {
      * 削减一项属性。
      * 每次先 remove 再 add —— 既是"刷新"，也保证**不会越叠越多**。
      */
-    private static void cut(LivingEntity target, Attribute attribute, UUID id,
+    private static void cut(LivingEntity target, Holder<Attribute> attribute, ResourceLocation id,
                             double amount, boolean multiply) {
         AttributeInstance instance = target.getAttribute(attribute);
         if (instance == null) return;
 
         if (instance.getModifier(id) != null) instance.removeModifier(id);
 
-        instance.addTransientModifier(new AttributeModifier(id, "mahoraga_crack", amount,
-                multiply ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                        : AttributeModifier.Operation.ADDITION));
+        instance.addTransientModifier(new AttributeModifier(id, amount,
+                multiply ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        : AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static void clearMinions(LivingEntity target) {
