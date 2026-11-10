@@ -102,7 +102,7 @@ public final class AnalyzeTracker {
 
     /** 生物注册名 —— 解析记录就是按它分的。 */
     public static String idOf(LivingEntity entity) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(entity.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         return id == null ? "unknown" : id.toString();
     }
 
