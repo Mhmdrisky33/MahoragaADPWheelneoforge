@@ -32,6 +32,6 @@ public final class MahoragaClientEvents {
     @SubscribeEvent
     public static void onRegisterOverlays(RegisterGuiLayersEvent event) {
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "mahoraga_wheel_hud"),
-                (gui, graphics, partialTick, screenWidth, screenHeight) -> WheelHud.render(graphics));
+                (graphics, partialTick) -> WheelHud.render(graphics));
     }
 }
