@@ -1897,7 +1897,7 @@ public final class AdaptationManager {
     @SubscribeEvent
     public static void onEatStart(LivingEntityUseItemEvent.Start event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!event.getItem().isEdible()) return;
+        if (event.getItem().getItem().getFoodProperties(event.getItem(), player) == null) return;
 
         int pct;
 
@@ -2184,7 +2184,7 @@ public final class AdaptationManager {
         if (existing != null) instance.removeModifier(id);
         if (amount > 0.0D) {
             instance.addTransientModifier(new AttributeModifier(id, name, amount,
-                    AttributeModifier.Operation.ADDITION));
+                    AttributeModifier.Operation.ADD_VALUE));
         }
     }
 }
