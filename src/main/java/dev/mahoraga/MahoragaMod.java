@@ -6,10 +6,8 @@ import dev.mahoraga.registry.ModAttachments;
 import dev.mahoraga.registry.ModComponents;
 import dev.mahoraga.registry.ModItems;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 
-@Mod(MahoragaMod.MODID)
 public class MahoragaMod {
     public static final String MODID = "mahoraga";
 
