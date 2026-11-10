@@ -33,5 +33,12 @@
   "command.mahoraga.empty": "(belum ada progres adaptasi)",
   "command.mahoraga.reset": "Semua progres adaptasi dihapus.",
   "command.mahoraga.resetNothing": "Tidak ada progres adaptasi untuk dihapus.",
-  "command.mahoraga.set.badTrack": "Track harus defense / attack"
+  "command.mahoraga.set.badTrack": "Track harus defense / attack",
+  "key.mahoraga.hud_settings": "Buka Pengaturan HUD Mahoraga",
+  "screen.mahoraga.hud.title": "Pengaturan HUD Mahoraga",
+  "screen.mahoraga.hud.icon": "Ikon roda: %s",
+  "screen.mahoraga.hud.entries": "Daftar adaptasi: %s",
+  "screen.mahoraga.hud.reset": "Atur ulang",
+  "screen.mahoraga.hud.current": "Posisi: X %s / Y %s   Skala: %s",
+  "screen.mahoraga.hud.hint": "Tekan O di dalam game untuk membuka pengaturan ini lagi."
 }
