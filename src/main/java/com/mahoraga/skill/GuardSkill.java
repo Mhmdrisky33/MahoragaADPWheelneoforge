@@ -9,9 +9,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -60,7 +60,7 @@ public final class GuardSkill {
     // ==================== 减伤 ====================
 
     @SubscribeEvent
-    public static void onHurt(LivingHurtEvent event) {
+    public static void onHurt(LivingIncomingDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
         if (!isActive(player)) return;
@@ -71,7 +71,7 @@ public final class GuardSkill {
     // ==================== 自动反击 ====================
 
     @SubscribeEvent
-    public static void onAttacked(LivingAttackEvent event) {
+    public static void onAttacked(LivingIncomingDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
         if (!isActive(player)) return;
@@ -94,10 +94,10 @@ public final class GuardSkill {
     // ==================== 激活 / 解除时的提示（只在状态切换时发） ====================
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        
 
-        Player player = event.player;
+        Player player = event.getEntity();
         if (player.level().isClientSide) return;
         if (player.tickCount % 5 != 0) return;
 
