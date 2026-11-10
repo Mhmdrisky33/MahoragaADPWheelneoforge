@@ -3,7 +3,7 @@ name: Build Mahoraga NeoForge 1.21.1
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, visual-gui-update ]
 
 permissions:
   contents: read
