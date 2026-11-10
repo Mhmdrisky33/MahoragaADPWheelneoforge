@@ -1,6 +1,7 @@
 package com.mahoraga.effect;
 
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -26,23 +27,23 @@ import net.minecraft.world.phys.Vec3;
  */
 public class StunEffect extends MobEffect {
     /** 移速修饰符的固定 UUID（属性类改动一律固定 UUID + 可自动摘除）。 */
-    private static final String SPEED_MODIFIER = "3f1c8a54-9e02-4b7d-8a61-c05e2d9f7b13";
+    private static final ResourceLocation SPEED_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "stun_speed");
 
     public StunEffect() {
         super(MobEffectCategory.HARMFUL, 0x2B0F45);
 
         this.addAttributeModifier(Attributes.MOVEMENT_SPEED, SPEED_MODIFIER,
-                -1.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                -1.0D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     /** 每 tick 都要生效（眩晕不是"每秒掉一次血"那种）。 */
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         Vec3 motion = entity.getDeltaMovement();
 
         // 水平速度清零、**保留垂直**（不然摔下来的时候会悬在半空）
@@ -50,5 +51,6 @@ public class StunEffect extends MobEffect {
 
         // 不标记的话客户端还在按老速度往前滑，看着像"漂移"
         entity.hurtMarked = true;
+        return true;
     }
 }
