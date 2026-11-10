@@ -205,7 +205,8 @@ public final class AnalyzeNarrator {
     }
 
     private static boolean hasBossTag(LivingEntity target) {
-        return BuiltInRegistries.ENTITY_TYPE.getHolder(target.getType())
+        return BuiltInRegistries.ENTITY_TYPE.getResourceKey(target.getType())
+                .flatMap(BuiltInRegistries.ENTITY_TYPE::getHolder)
                 .map(holder -> holder.tags().anyMatch(tag -> tag.location().getPath().contains("boss")))
                 .orElse(false);
     }
