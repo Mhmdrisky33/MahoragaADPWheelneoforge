@@ -98,8 +98,8 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    public double getMyRidingOffset() {
-        return 0.5D;
+    public Vec3 getVehicleAttachmentPoint(Entity vehicle) {
+        return new Vec3(0.0D, 0.5D, 0.0D);
     }
 
     @Nullable
