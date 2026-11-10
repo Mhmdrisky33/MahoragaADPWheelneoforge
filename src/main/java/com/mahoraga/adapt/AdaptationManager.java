@@ -1827,11 +1827,10 @@ public final class AdaptationManager {
     /**
      * 跳跃奖励：把"**重力减少 15%**"挂上 / 摘掉。
      *
-     * ⚠️ 用 `Attributes.GRAVITY`（Forge 加的属性），**不是** `Attributes` 里的 ——
-     * 原版 1.20.1 根本没有重力属性，别去 `Attributes` 里找。
+     * 使用 Minecraft 1.21.1 内建的 `Attributes.GRAVITY`。
      */
     private static void applyGravity(Player player, boolean active) {
-        AttributeInstance instance = player.getAttribute(NeoForgeMod.ENTITY_GRAVITY);
+        AttributeInstance instance = player.getAttribute(Attributes.GRAVITY);
         if (instance == null) return;
 
         AttributeModifier existing = instance.getModifier(GRAVITY_MODIFIER);
@@ -1895,7 +1894,7 @@ public final class AdaptationManager {
     @SubscribeEvent
     public static void onEatStart(LivingEntityUseItemEvent.Start event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!event.getItem().isEdible()) return;
+        if (!event.getItem().getFoodProperties(player) == null) return;
 
         int pct;
 
