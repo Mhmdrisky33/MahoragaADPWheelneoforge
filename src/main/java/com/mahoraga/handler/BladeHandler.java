@@ -9,6 +9,8 @@ import com.mahoraga.registry.ModItems;
 import com.mahoraga.skill.MiningAdaptation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -53,12 +55,13 @@ public final class BladeHandler {
     }
 
     public static boolean isBroken(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(BROKEN_TAG);
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean(BROKEN_TAG);
     }
 
     private static void setBroken(ItemStack stack, boolean broken) {
-        CompoundTag tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putBoolean(BROKEN_TAG, broken);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
     private static ItemStack findIntactBlade(Player player) {
@@ -272,18 +275,13 @@ public final class BladeHandler {
      * 诊断用：和 {@link #skinMode} 的结果对照，就能看出断在"判据"还是"写入"。
      */
     public static int skinTag(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getInt("CustomModelData") : 0;
+        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, 0);
     }
 
-    private static void setSkin(ItemStack stack, int mode) {        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.getInt("CustomModelData") == mode) return;      // 没变，别触发同步
-
-        if (mode <= SKIN_NONE) {
-            tag.remove("CustomModelData");
-        } else {
-            tag.putInt("CustomModelData", mode);
-        }
+    private static void setSkin(ItemStack stack, int mode) {
+        if (stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, 0) == mode) return;
+        if (mode <= SKIN_NONE) stack.remove(DataComponents.CUSTOM_MODEL_DATA);
+        else stack.set(DataComponents.CUSTOM_MODEL_DATA, mode);
     }
 
     /**
