@@ -46,7 +46,7 @@ public final class OutlineEffectSupport {
         PostChain effect = ((LevelRendererAccessor) mc.levelRenderer).mahoraga$entityEffect();
         if (effect == null) return;
 
-        effect.process(event.getPartialTick());
+        effect.process(event.getPartialTick().getGameTimeDeltaPartialTick(false));
         mc.getMainRenderTarget().bindWrite(false);
     }
 }
