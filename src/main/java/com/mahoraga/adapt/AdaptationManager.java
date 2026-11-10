@@ -28,6 +28,7 @@ import com.mahoraga.skill.UndeadExecute;
 import com.mahoraga.skill.VoidDomain;
 import com.mahoraga.skill.WheelSymbiosis;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -215,13 +216,13 @@ public final class AdaptationManager {
     private static final float SPRINT_FOOD = 3.0F;
     /** 玩家基础台阶高度 0.6，加这么多 → 一共 1.5 格。 */
     private static final double STEP_HEIGHT_BONUS = 0.9D;
-    private static final UUID STEP_MODIFIER = UUID.fromString("8b31d0f4-2c67-4a95-9e18-3f7a20c65d84");
+    private static final ResourceLocation STEP_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "step_height");
 
     /** 跳跃到这个值 → **自身重力减少 15%**。 */
     private static final float JUMP_GRAVITY = 1.0F;
     /** 重力削减量（`MULTIPLY_TOTAL -0.15` → 实际是原来的 85%）。 */
     private static final double GRAVITY_CUT = -0.15D;
-    private static final UUID GRAVITY_MODIFIER = UUID.fromString("c4a91e27-5d38-4b60-8f12-7e6d0b93ae74");
+    private static final ResourceLocation GRAVITY_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "low_gravity");
 
     /** 吃一次给多少进食适应进度。 */
     private static final float GAIN_EAT = 0.12F;
@@ -331,10 +332,10 @@ public final class AdaptationManager {
      */
     private static final int HEAL_TICKS = 60;
 
-    private static final UUID HEALTH_MODIFIER = UUID.fromString("6f2a1c74-9b31-4a0e-8d55-0f3a7c9e1b20");
-    private static final UUID ARMOR_MODIFIER = UUID.fromString("a4d19e02-77c6-4f18-b3a9-2e5d6048c7f1");
+    private static final ResourceLocation HEALTH_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "adapt_health");
+    private static final ResourceLocation ARMOR_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "adapt_armor");
     /** 爆炸击退抗性（适应了爆炸之后挂 100%，纯粹为了**不被崩飞**）。 */
-    private static final UUID EXPLOSION_MODIFIER = UUID.fromString("d5b83f16-4a92-4e7c-8f31-9a06c2d54e87");
+    private static final ResourceLocation EXPLOSION_MODIFIER = ResourceLocation.fromNamespaceAndPath("mahoraga", "blast_resist");
     /** 上一次告诉客户端的「多段跳额度」—— 用来只在变化时发包（平时安静）。 */
     private static final Map<UUID, Integer> LAST_JUMP_TIERS = new ConcurrentHashMap<>();
 
@@ -1809,7 +1810,7 @@ public final class AdaptationManager {
 
     /** 跑步奖励：把台阶高度加成挂上 / 摘掉。 */
     private static void applyStepHeight(Player player, boolean active) {
-        AttributeInstance instance = player.getAttribute(NeoForgeMod.STEP_HEIGHT_ADDITION.get());
+        AttributeInstance instance = player.getAttribute(NeoForgeMod.STEP_HEIGHT_ADDITION);
         if (instance == null) return;
 
         AttributeModifier existing = instance.getModifier(STEP_MODIFIER);
@@ -1820,8 +1821,7 @@ public final class AdaptationManager {
         }
         if (existing != null) return;
 
-        instance.addTransientModifier(new AttributeModifier(STEP_MODIFIER, "mahoraga_step_height",
-                STEP_HEIGHT_BONUS, AttributeModifier.Operation.ADDITION));
+        instance.addTransientModifier(new AttributeModifier(STEP_MODIFIER, STEP_HEIGHT_BONUS, AttributeModifier.Operation.ADD_VALUE));
     }
 
     /**
@@ -1831,7 +1831,7 @@ public final class AdaptationManager {
      * 原版 1.20.1 根本没有重力属性，别去 `Attributes` 里找。
      */
     private static void applyGravity(Player player, boolean active) {
-        AttributeInstance instance = player.getAttribute(NeoForgeMod.ENTITY_GRAVITY.get());
+        AttributeInstance instance = player.getAttribute(NeoForgeMod.ENTITY_GRAVITY);
         if (instance == null) return;
 
         AttributeModifier existing = instance.getModifier(GRAVITY_MODIFIER);
@@ -1842,8 +1842,7 @@ public final class AdaptationManager {
         }
         if (existing != null) return;
 
-        instance.addTransientModifier(new AttributeModifier(GRAVITY_MODIFIER, "mahoraga_low_gravity",
-                GRAVITY_CUT, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        instance.addTransientModifier(new AttributeModifier(GRAVITY_MODIFIER, GRAVITY_CUT, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 
     // ==================== 进食适应 ====================
@@ -2135,7 +2134,7 @@ public final class AdaptationManager {
     }
 
     /** 按固定 UUID 摘掉一个修饰符（没有就什么都不做）。 */
-    private static void strip(Player player, Attribute attribute, UUID id) {
+    private static void strip(Player player, Holder<Attribute> attribute, ResourceLocation id) {
         AttributeInstance instance = player.getAttribute(attribute);
 
         if (instance != null && instance.getModifier(id) != null) {
@@ -2172,18 +2171,17 @@ public final class AdaptationManager {
         }
     }
 
-    private static void setModifier(Player player, Attribute attribute, UUID id, String name, double amount) {
+    private static void setModifier(Player player, Holder<Attribute> attribute, ResourceLocation id, String name, double amount) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance == null) return;
 
         AttributeModifier existing = instance.getModifier(id);
 
-        if (existing != null && Math.abs(existing.getAmount() - amount) < 1.0E-4D) return;
+        if (existing != null && Math.abs(existing.amount() - amount) < 1.0E-4D) return;
 
         if (existing != null) instance.removeModifier(id);
         if (amount > 0.0D) {
-            instance.addTransientModifier(new AttributeModifier(id, name, amount,
-                    AttributeModifier.Operation.ADDITION));
+            instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 }
