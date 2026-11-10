@@ -1,0 +1,20 @@
+{
+  "wheel": {
+    "sounds": [
+      "mahoraga:wheel"
+    ]
+  },
+  "slash": {
+    "subtitle": "subtitles.mahoraga.slash",
+    "sounds": [
+      "mahoraga:slash",
+      "mahoraga:slash1"
+    ]
+  },
+  "cleave": {
+    "subtitle": "subtitles.mahoraga.cleave",
+    "sounds": [
+      "mahoraga:cleave"
+    ]
+  }
+}
