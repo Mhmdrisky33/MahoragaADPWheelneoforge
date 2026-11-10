@@ -9,7 +9,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -39,9 +38,9 @@ public final class PotionAdaptation {
         Holder<MobEffect> effect = event.getEffectInstance().getEffect();
 
         if (!isHarmful(effect)) return;
-        if (!AdaptationManager.hasEffectImmunity(player, effect.value())) return;
+        if (!AdaptationManager.hasEffectImmunity(player, effect)) return;
 
-        event.setResult(Event.Result.DENY);
+        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 
     /** 免疫之前中的、或者别人给的 → 立刻摘掉。 */
