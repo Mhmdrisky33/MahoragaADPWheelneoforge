@@ -219,7 +219,7 @@ public final class FireArrow {
 
             victim.invulnerableTime = 0;
             victim.hurt(ModDamageTypes.spell(owner), (float) (damage * (0.35D + 0.65D * falloff)));
-            victim.setSecondsOnFire(FIRE_SECONDS);
+            victim.igniteForSeconds((float) FIRE_SECONDS);
 
             // 从爆心往外推
             Vec3 push = victim.position().subtract(at).normalize().scale(0.9D * falloff);
