@@ -22,10 +22,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingUseTotemEvent;
-import net.neoforged.neoforge.event.entity.living.ShieldBlockEvent;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -153,7 +153,7 @@ public final class SignatureDefense {
 
     /** 卫道士：盾牌连耐久都不掉。 */
     @SubscribeEvent
-    public static void onShieldBlock(ShieldBlockEvent event) {
+    public static void onShieldBlock(LivingShieldBlockEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!hasComplete(player, "minecraft:vindicator")) return;
 
@@ -246,7 +246,7 @@ public final class SignatureDefense {
      * ⚠️ 由 `AdaptationManager#onHurt` **显式调用**，不是靠自己的 `@SubscribeEvent` ——
      *    这个项目被"事件类没注册"坑过一次，能确定在跑的路就别再赌。
      */
-    public static void onCounterHurt(Player player, LivingHurtEvent event) {
+    public static void onCounterHurt(Player player, LivingIncomingDamageEvent event) {
         if (player.level().isClientSide) return;
         if (!complete(player, "minecraft:enderman")) return;
 
