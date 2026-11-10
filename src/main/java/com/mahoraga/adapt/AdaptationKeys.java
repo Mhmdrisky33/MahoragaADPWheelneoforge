@@ -291,7 +291,7 @@ public final class AdaptationKeys {
 
         if (key.startsWith("entity:")) {
             ResourceLocation id = ResourceLocation.tryParse(key.substring(7));
-            EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPE.getValue(id);
+            EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPE.get(id);
             return type == null ? Component.literal(key.substring(7)) : type.getDescription();
         }
         if (key.startsWith("damage:")) {
@@ -322,7 +322,7 @@ public final class AdaptationKeys {
         }
         if (key.startsWith(EFFECT_PREFIX)) {
             ResourceLocation id = ResourceLocation.tryParse(key.substring(EFFECT_PREFIX.length()));
-            MobEffect effect = id == null ? null : BuiltInRegistries.MOB_EFFECT.getValue(id);
+            MobEffect effect = id == null ? null : BuiltInRegistries.MOB_EFFECT.get(id);
             return effect == null
                     ? Component.literal(key.substring(EFFECT_PREFIX.length()))
                     : Component.translatable(effect.getDescriptionId());
