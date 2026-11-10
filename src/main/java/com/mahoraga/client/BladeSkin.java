@@ -5,6 +5,7 @@ import com.mahoraga.handler.BladeHandler;
 import com.mahoraga.registry.ModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomModelData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -91,6 +92,6 @@ public final class BladeSkin {
 
     /** 读物品上的皮肤编号（服务端写进来的）。 */
     public static int modeOf(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, 0);
+        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, CustomModelData.DEFAULT).value();
     }
 }
