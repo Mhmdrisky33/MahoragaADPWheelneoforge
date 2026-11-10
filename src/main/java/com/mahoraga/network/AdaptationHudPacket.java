@@ -13,7 +13,7 @@ import java.util.List;
 public record AdaptationHudPacket(boolean wheel, List<Entry> entries, int spinSeq) implements CustomPacketPayload {
     public record Entry(String key, int track, int percent) {}
     public static final Type<AdaptationHudPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "adaptation_hud"));
-    public static final StreamCodec<FriendlyByteBuf, AdaptationHudPacket> STREAM_CODEC = StreamCodec.of(AdaptationHudPacket::encode, AdaptationHudPacket::decode);
+    public static final StreamCodec<FriendlyByteBuf, AdaptationHudPacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), AdaptationHudPacket::decode);
 
     private static AdaptationHudPacket decode(FriendlyByteBuf buf) {
         boolean wheel = buf.readBoolean();
