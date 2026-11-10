@@ -39,7 +39,7 @@ public final class PotionAdaptation {
         Holder<MobEffect> effect = event.getEffectInstance().getEffect();
 
         if (!isHarmful(effect)) return;
-        if (!AdaptationManager.hasEffectImmunity(player, effect)) return;
+        if (!AdaptationManager.hasEffectImmunity(player, effect.value())) return;
 
         event.setResult(Event.Result.DENY);
     }
