@@ -55,7 +55,7 @@ public final class PotionAdaptation {
 
         // 拷一份再遍历：removeEffect 会改原集合
         for (MobEffectInstance instance : new ArrayList<>(player.getActiveEffects())) {
-            MobEffect effect = instance.getEffect();
+            Holder<MobEffect> effect = instance.getEffect();
 
             if (!isHarmful(effect)) continue;
             if (AdaptationManager.hasEffectImmunity(player, effect)) {
@@ -64,7 +64,7 @@ public final class PotionAdaptation {
         }
     }
 
-    private static boolean isHarmful(MobEffect effect) {
-        return !effect.isBeneficial();
+    private static boolean isHarmful(Holder<MobEffect> effect) {
+        return !effect.value().isBeneficial();
     }
 }
