@@ -7,6 +7,7 @@ import com.mahoraga.adapt.AnalyzeTracker;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -172,7 +173,7 @@ public final class CrackPool {
     }
 
     /** 自增益池 —— 全是原版效果，抽到就一直给自己挂上。 */
-    private static final MobEffect[] BUFFS = {
+    private static final Holder<MobEffect>[] BUFFS = {
             MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.DAMAGE_RESISTANCE,
             MobEffects.REGENERATION, MobEffects.ABSORPTION, MobEffects.DIG_SPEED,
             MobEffects.JUMP, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION,
@@ -206,7 +207,7 @@ public final class CrackPool {
 
         if (id == null) return Component.literal(entityId);
 
-        var type = BuiltInRegistries.ENTITY_TYPES.getValue(id);
+        var type = BuiltInRegistries.ENTITY_TYPE.getValue(id);
         return type == null ? Component.literal(entityId) : type.getDescription();
     }
 
@@ -311,7 +312,7 @@ public final class CrackPool {
         if (!data.buffs(entityId).isEmpty()) return;
 
         MobEffect buff = BUFFS[player.getRandom().nextInt(BUFFS.length)];
-        ResourceLocation id = BuiltInRegistries.MOB_EFFECTS.getKey(buff);
+        ResourceLocation id = BuiltInRegistries.MOB_EFFECT.getKey(buff);
 
         if (id != null) data.addBuff(entityId, id.toString());
     }
