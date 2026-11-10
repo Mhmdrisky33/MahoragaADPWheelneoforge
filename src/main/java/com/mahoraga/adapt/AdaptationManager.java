@@ -2183,7 +2183,7 @@ public final class AdaptationManager {
 
         if (existing != null) instance.removeModifier(id);
         if (amount > 0.0D) {
-            instance.addTransientModifier(new AttributeModifier(id, name, amount,
+            instance.addTransientModifier(new AttributeModifier(id, amount,
                     AttributeModifier.Operation.ADD_VALUE));
         }
     }
