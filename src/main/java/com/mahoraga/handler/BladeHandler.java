@@ -11,7 +11,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
@@ -85,10 +86,12 @@ public final class BladeHandler {
     }
 
     /** 造一把新的退魔之剑 —— **自带亡灵杀手 V**。 */
-    public static ItemStack newBlade() {
+    public static ItemStack newBlade(Player player) {
         ItemStack stack = new ItemStack(ModItems.MAHORAGA_BLADE.get());
-        Holder<Enchantment> smite = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.SMITE).orElseThrow();
-        stack.enchant(smite, SMITE_LEVEL);
+        HolderLookup.RegistryLookup<Enchantment> enchantments =
+                player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> smite = enchantments.getOrThrow(Enchantments.SMITE);
+        EnchantmentHelper.updateEnchantments(stack, mutable -> mutable.set(smite, SMITE_LEVEL));
         return stack;
     }
 
@@ -104,8 +107,10 @@ public final class BladeHandler {
     private static void ensureEnchants(Player player, ItemStack stack) {
         int fortune = MiningAdaptation.fortune(player);
 
-        Holder<Enchantment> smite = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.SMITE).orElseThrow();
-        Holder<Enchantment> fortuneEnchantment = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.FORTUNE).orElseThrow();
+        HolderLookup.RegistryLookup<Enchantment> enchantments =
+                player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> smite = enchantments.getOrThrow(Enchantments.SMITE);
+        Holder<Enchantment> fortuneEnchantment = enchantments.getOrThrow(Enchantments.FORTUNE);
 
         boolean smiteOk = stack.getEnchantmentLevel(smite) >= SMITE_LEVEL;
         boolean fortuneOk = stack.getEnchantmentLevel(fortuneEnchantment) == fortune;
@@ -121,7 +126,7 @@ public final class BladeHandler {
 
     /** 把剑塞进背包；塞不下就丢在脚边（绝不能凭空消失）。 */
     private static void give(Player player) {
-        ItemStack stack = newBlade();
+        ItemStack stack = newBlade(player);
 
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
