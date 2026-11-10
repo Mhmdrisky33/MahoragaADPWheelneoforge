@@ -6,7 +6,7 @@ import com.mahoraga.handler.WheelHandler;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -45,8 +45,7 @@ public final class PotionAdaptation {
 
     /** 免疫之前中的、或者别人给的 → 立刻摘掉。 */
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
 
         Player player = event.player;
         if (player.level().isClientSide) return;
