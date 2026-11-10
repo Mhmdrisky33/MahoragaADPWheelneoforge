@@ -22,7 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.monster.Zombie;
@@ -503,7 +503,7 @@ public final class SignatureAttack {
     /** 留着给以后可能用到的判定（免得 import 被 IDE 清掉）。 */
     @SuppressWarnings("unused")
     private static boolean isUndead(LivingEntity entity) {
-        return entity.getMobType() == MobType.UNDEAD;
+        return entity.getType().is(EntityTypeTags.UNDEAD);
     }
 
     // ==================== 僵尸援军的看管 ====================
