@@ -30,18 +30,7 @@ import java.util.List;
  */
 public class MahoragaBladeItem extends SwordItem {
     public MahoragaBladeItem(Tier tier, int damage, float speed, Properties properties) {
-        super(tier, damage, speed, properties);
-    }
-
-    /**
-     * 无限耐久。
-     *
-     * 这一句同时解决三件事：不掉耐久、不显示耐久条、永远不会碎。
-     * （比每 tick 往上塞 `Unbreakable` 标签干净，也不占同步带宽。）
-     */
-    @Override
-    public boolean canBeDepleted() {
-        return false;
+        super(tier, properties.attributes(SwordItem.createAttributes(tier, damage, speed)));
     }
 
     // ==================== 万能工具 ====================
@@ -63,10 +52,6 @@ public class MahoragaBladeItem extends SwordItem {
         return MiningAdaptation.UNIVERSAL_SPEED;
     }
 
-    @Override
-    public boolean isCorrectToolForDrops(BlockState state) {
-        return true;
-    }
 
     @Override
     public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
