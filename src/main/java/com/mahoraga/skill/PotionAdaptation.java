@@ -3,6 +3,7 @@ package com.mahoraga.skill;
 import com.mahoraga.MahoragaMod;
 import com.mahoraga.adapt.AdaptationManager;
 import com.mahoraga.handler.WheelHandler;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +36,7 @@ public final class PotionAdaptation {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
 
-        MobEffect effect = event.getEffectInstance().getEffect();
+        Holder<MobEffect> effect = event.getEffectInstance().getEffect();
 
         if (!isHarmful(effect)) return;
         if (!AdaptationManager.hasEffectImmunity(player, effect)) return;
