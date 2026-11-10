@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "mahoraga:spell",
+    "mahoraga:true_damage",
+    "mahoraga:bleed",
+    "mahoraga:lightning"
+  ]
+}
