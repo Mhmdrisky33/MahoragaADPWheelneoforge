@@ -207,7 +207,7 @@ public final class CrackPool {
 
         if (id == null) return Component.literal(entityId);
 
-        var type = BuiltInRegistries.ENTITY_TYPE.getValue(id);
+        var type = BuiltInRegistries.ENTITY_TYPE.get(id);
         return type == null ? Component.literal(entityId) : type.getDescription();
     }
 
