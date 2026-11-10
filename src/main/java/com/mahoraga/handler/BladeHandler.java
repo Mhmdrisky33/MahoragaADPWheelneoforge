@@ -10,6 +10,9 @@ import com.mahoraga.skill.MiningAdaptation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -18,13 +21,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -85,7 +88,8 @@ public final class BladeHandler {
     /** 造一把新的退魔之剑 —— **自带亡灵杀手 V**。 */
     public static ItemStack newBlade() {
         ItemStack stack = new ItemStack(ModItems.MAHORAGA_BLADE.get());
-        stack.enchant(Enchantments.SMITE, SMITE_LEVEL);
+        Holder<Enchantment> smite = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.SMITE).orElseThrow();
+        stack.enchant(smite, SMITE_LEVEL);
         return stack;
     }
 
@@ -101,16 +105,19 @@ public final class BladeHandler {
     private static void ensureEnchants(Player player, ItemStack stack) {
         int fortune = MiningAdaptation.fortune(player);
 
-        boolean smiteOk = stack.getEnchantmentLevel(Enchantments.SMITE) >= SMITE_LEVEL;
-        boolean fortuneOk = stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE) == fortune;
+        Holder<Enchantment> smite = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.SMITE).orElseThrow();
+        Holder<Enchantment> fortuneEnchantment = BuiltInRegistries.ENCHANTMENT.getHolder(Enchantments.FORTUNE).orElseThrow();
+
+        boolean smiteOk = stack.getEnchantmentLevel(smite) >= SMITE_LEVEL;
+        boolean fortuneOk = stack.getEnchantmentLevel(fortuneEnchantment) == fortune;
 
         if (smiteOk && fortuneOk) return;
 
-        Map<Enchantment, Integer> enchants = new LinkedHashMap<>();
-        enchants.put(Enchantments.SMITE, SMITE_LEVEL);
-        if (fortune > 0) enchants.put(Enchantments.BLOCK_FORTUNE, fortune);
-
-        EnchantmentHelper.setEnchantments(enchants, stack);
+        EnchantmentHelper.updateEnchantments(stack, enchants -> {
+            enchants.removeIf(holder -> true);
+            enchants.set(smite, SMITE_LEVEL);
+            if (fortune > 0) enchants.set(fortuneEnchantment, fortune);
+        });
     }
 
     /** 把剑塞进背包；塞不下就丢在脚边（绝不能凭空消失）。 */
@@ -275,13 +282,13 @@ public final class BladeHandler {
      * 诊断用：和 {@link #skinMode} 的结果对照，就能看出断在"判据"还是"写入"。
      */
     public static int skinTag(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, 0);
+        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, CustomModelData.DEFAULT).value();
     }
 
     private static void setSkin(ItemStack stack, int mode) {
-        if (stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, 0) == mode) return;
+        if (stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, CustomModelData.DEFAULT).value() == mode) return;
         if (mode <= SKIN_NONE) stack.remove(DataComponents.CUSTOM_MODEL_DATA);
-        else stack.set(DataComponents.CUSTOM_MODEL_DATA, mode);
+        else stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(mode));
     }
 
     /**
