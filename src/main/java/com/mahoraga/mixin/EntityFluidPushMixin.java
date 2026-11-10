@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Entity.class)
 public abstract class EntityFluidPushMixin {
-    @Inject(method = "isPushedByFluid", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isPushedByFluid", at = @At("HEAD"), cancellable = true, remap = false)
     private void mahoraga$noFluidPush(CallbackInfoReturnable<Boolean> cir) {
         if (!((Object) this instanceof Player player)) return;
         // 只有在"确实正站在液体表面上"时才算数 —— 这个掩码本身就排除了
