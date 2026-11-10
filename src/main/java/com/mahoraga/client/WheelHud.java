@@ -34,7 +34,6 @@ public final class WheelHud {
             ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "textures/gui/wheel_hud.png");
 
     /** 离屏幕左上角多远。 */
-    private static final int MARGIN = 5;
     /** 图标边长（GUI 像素，不是贴图像素 —— 贴图是 128×128，缩着画）。 */
     private static final int WHEEL_SIZE = 30;
     /** 列表行高。字体本身高 9，给 9 就够紧。 */
@@ -80,43 +79,41 @@ public final class WheelHud {
 
     /** 左上角那块东西的全部绘制。 */
     public static void render(GuiGraphics graphics) {
-        if (!visible) return;
+        WheelHudSettings.loadIfNeeded();
+        if (!visible || (!WheelHudSettings.showIcon() && !WheelHudSettings.showEntries())) return;
 
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.level == null || minecraft.options.hideGui) return;
 
-        drawWheel(graphics);
+        var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(WheelHudSettings.x(), WheelHudSettings.y(), 0.0F);
+        pose.scale(WheelHudSettings.scale(), WheelHudSettings.scale(), 1.0F);
 
-        var font = minecraft.font;
-        int y = MARGIN + WHEEL_SIZE + 2;
+        if (WheelHudSettings.showIcon()) drawWheel(graphics);
 
-        for (AdaptationHudPacket.Entry entry : entries) {
-            String name = font.plainSubstrByWidth(
-                    AdaptationKeys.display(entry.key()).getString(), NAME_WIDTH);
-            String percent = " " + entry.percent() + "%";
+        if (WheelHudSettings.showEntries()) {
+            var font = minecraft.font;
+            int y = WheelHudSettings.showIcon() ? WHEEL_SIZE + 2 : 0;
 
-            int nameWidth = font.width(name);
-            int color = TRACK_COLORS[Mth.clamp(entry.track(), 0, TRACK_COLORS.length - 1)];
+            for (AdaptationHudPacket.Entry entry : entries) {
+                String name = font.plainSubstrByWidth(
+                        AdaptationKeys.display(entry.key()).getString(), NAME_WIDTH);
+                String percent = " " + entry.percent() + "%";
 
-            // 很淡的一层黑底：沙漠 / 雪地上纯靠阴影还是糊，垫一下才看得清（alpha 才 31/255）
-            graphics.fill(MARGIN - 1, y - 1, MARGIN + nameWidth + font.width(percent) + 2, y + 8,
-                    0x1F000000);
+                int nameWidth = font.width(name);
+                int color = TRACK_COLORS[Mth.clamp(entry.track(), 0, TRACK_COLORS.length - 1)];
 
-            graphics.drawString(font, name, MARGIN, y, color, true);
-            graphics.drawString(font, percent, MARGIN + nameWidth, y, 0xFFE6E6E6, true);
-
-            y += ROW_HEIGHT;
+                graphics.fill(-1, y - 1, nameWidth + font.width(percent) + 2, y + 8, 0x1F000000);
+                graphics.drawString(font, name, 0, y, color, true);
+                graphics.drawString(font, percent, nameWidth, y, 0xFFE6E6E6, true);
+                y += ROW_HEIGHT;
+            }
         }
+
+        pose.popPose();
     }
 
-    /**
-     * 画法轮本体 —— 绕**自己的中心**转，所以先把原点挪到中心、转、再挪回去。
-     * 贴图是 128×128 的整图，缩到 30×30 画。
-     *
-     * <p>平时它会<b>不安分地抖</b>（见 {@link #idleWobble}）—— 主人 2026-09-15 要的
-     * "感觉随时都会转动、忍不住要转了"。真正开始转的时候抖动立刻归零，
-     * 不然两股角度叠在一起会像抽筋。
-     */
     private static void drawWheel(GuiGraphics graphics) {
         var pose = graphics.pose();
         float half = WHEEL_SIZE / 2.0F;
@@ -129,7 +126,7 @@ public final class WheelHud {
         float jitterY = spinning ? 0.0F : idleJitter(4.9D, 0.45F);
 
         pose.pushPose();
-        pose.translate(MARGIN + half + jitterX, MARGIN + half + jitterY, 0.0F);
+        pose.translate(half + jitterX, half + jitterY, 0.0F);
         pose.mulPose(Axis.ZP.rotationDegrees(angle + wobble));
         pose.translate(-half, -half, 0.0F);
 
