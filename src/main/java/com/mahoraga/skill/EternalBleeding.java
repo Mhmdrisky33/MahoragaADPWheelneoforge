@@ -78,7 +78,7 @@ public final class EternalBleeding {
     }
 
     private static void refresh(LivingEntity victim, int level) {
-        victim.addEffect(new MobEffectInstance(ModEffects.BLEEDING.get(), EFFECT_TICKS,
+        victim.addEffect(new MobEffectInstance(ModEffects.BLEEDING, EFFECT_TICKS,
                 Math.max(0, level - 1), false, true, true));
     }
 
