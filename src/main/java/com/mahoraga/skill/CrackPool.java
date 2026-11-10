@@ -173,12 +173,12 @@ public final class CrackPool {
     }
 
     /** 自增益池 —— 全是原版效果，抽到就一直给自己挂上。 */
-    private static final Holder<MobEffect>[] BUFFS = {
+    private static final List<Holder<MobEffect>> BUFFS = List.of(
             MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.DAMAGE_RESISTANCE,
             MobEffects.REGENERATION, MobEffects.ABSORPTION, MobEffects.DIG_SPEED,
             MobEffects.JUMP, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION,
             MobEffects.DOLPHINS_GRACE
-    };
+    );
 
     private CrackPool() {
     }
@@ -311,8 +311,8 @@ public final class CrackPool {
     private static void ensureBuff(Player player, AnalyzeData data, String entityId) {
         if (!data.buffs(entityId).isEmpty()) return;
 
-        MobEffect buff = BUFFS[player.getRandom().nextInt(BUFFS.length)];
-        ResourceLocation id = BuiltInRegistries.MOB_EFFECT.getKey(buff);
+        Holder<MobEffect> buff = BUFFS.get(player.getRandom().nextInt(BUFFS.size()));
+        ResourceLocation id = buff.unwrapKey().map(key -> key.location()).orElse(null);
 
         if (id != null) data.addBuff(entityId, id.toString());
     }
