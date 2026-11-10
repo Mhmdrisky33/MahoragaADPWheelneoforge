@@ -38,6 +38,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -2068,7 +2069,7 @@ public final class AdaptationManager {
      * 25/50/100/200/…/800 依次对应 I~X 级，一级一档；1000% 那一段只加缓冲不再加等级
      * （X 级已经是原版能正常显示的最高等级，再加就会把翻译键名原样打出来）。
      */
-    private static void applyByProgress(Player player, float progress, MobEffect effect) {
+    private static void applyByProgress(Player player, float progress, Holder<MobEffect> effect) {
         int pct = percent(progress);
         int level = 0;
 
