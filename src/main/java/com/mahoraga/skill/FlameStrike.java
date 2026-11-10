@@ -58,7 +58,7 @@ public final class FlameStrike {
         boolean strong = progress >= TIER_2;
 
         // ① 点着它
-        victim.setSecondsOnFire(strong ? FIRE_SECONDS_T2 : FIRE_SECONDS);
+        victim.setRemainingFireTicks((strong ? FIRE_SECONDS_T2 : FIRE_SECONDS) * 20);
 
         // ② 二档再补一记火焰伤害（走自己的伤害类型，免得把平砍那一下算重）
         if (strong) {
