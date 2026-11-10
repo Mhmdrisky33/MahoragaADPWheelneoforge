@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -431,7 +432,7 @@ public final class SignatureAttack {
 
     // ==================== 各种手段 ====================
 
-    private static void effect(LivingEntity target, MobEffect effect, int duration, int amplifier) {
+    private static void effect(LivingEntity target, Holder<MobEffect> effect, int duration, int amplifier) {
         target.addEffect(new MobEffectInstance(effect, duration, amplifier));
     }
 
@@ -487,7 +488,7 @@ public final class SignatureAttack {
 
     /** 女巫：附带一个**随机负面**。 */
     private static void randomDebuff(LivingEntity target) {
-        MobEffect[] pool = {
+        Holder<MobEffect>[] pool = new Holder[] {
                 MobEffects.POISON, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.WEAKNESS,
                 MobEffects.DIG_SLOWDOWN, MobEffects.BLINDNESS, MobEffects.HUNGER,
                 MobEffects.CONFUSION, MobEffects.UNLUCK
