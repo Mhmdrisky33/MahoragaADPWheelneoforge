@@ -457,7 +457,7 @@ public final class SignatureAttack {
     /** 卫道士：随便什么攻击都能**破盾**（对玩家目标而言）。 */
     private static void breakShield(LivingEntity target) {
         if (target instanceof Player blocker && blocker.isBlocking()) {
-            blocker.disableShield(true);
+            blocker.disableShield();
         }
     }
 
