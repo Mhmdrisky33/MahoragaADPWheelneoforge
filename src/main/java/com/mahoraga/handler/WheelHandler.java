@@ -13,7 +13,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -227,10 +227,9 @@ public final class WheelHandler {
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.phase != TickEvent.Phase.END) return;
+        public static void onPlayerTick(PlayerTickEvent.Post event) {
 
-            Player player = event.player;
+            Player player = event.getEntity();
             if (player.level().isClientSide) return;
             if (!hasWheel(player)) {
                 PENDING.remove(player.getUUID());
