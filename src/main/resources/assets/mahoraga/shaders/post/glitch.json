@@ -1,0 +1,23 @@
+{
+    "targets": [
+        "swap",
+        "swap2"
+    ],
+    "passes": [
+        {
+            "name": "mahoraga:glitch",
+            "intarget": "minecraft:main",
+            "outtarget": "swap"
+        },
+        {
+            "name": "mahoraga:entity_glitch",
+            "intarget": "swap",
+            "outtarget": "swap2"
+        },
+        {
+            "name": "blit",
+            "intarget": "swap2",
+            "outtarget": "minecraft:main"
+        }
+    ]
+}
