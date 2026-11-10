@@ -85,6 +85,11 @@ public final class BladeHandler {
     }
 
     /** 造一把新的退魔之剑 —— **自带亡灵杀手 V**。 */
+    /** Stack contoh untuk creative tab; enchantment dinamis dipasang saat berada di inventory pemain. */
+    public static ItemStack newBlade() {
+        return new ItemStack(ModItems.MAHORAGA_BLADE.get());
+    }
+
     public static ItemStack newBlade(Player player) {
         ItemStack stack = new ItemStack(ModItems.MAHORAGA_BLADE.get());
         Holder<Enchantment> smite = player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SMITE);
