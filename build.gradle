@@ -3,7 +3,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.107'
-    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 version = mod_version
@@ -25,11 +24,6 @@ neoForge {
     }
 }
 
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-    config "mixins.${mod_id}.json"
-}
-
 repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven' }
     mavenCentral()
@@ -43,6 +37,7 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 21
+    options.compilerArgs += ["-AoutRefMap=mahoraga.refmap.json"]
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -64,7 +59,6 @@ tasks.withType(Jar).configureEach {
         "Specification-Vendor": mod_authors,
         "Specification-Version": "1",
         "Implementation-Title": project.name,
-        "Implementation-Version": project.version,
-        "MixinConfigs": "mixins.${mod_id}.json"
+        "Implementation-Version": project.version
     ])
 }
