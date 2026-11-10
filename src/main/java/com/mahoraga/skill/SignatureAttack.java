@@ -497,7 +497,7 @@ public final class SignatureAttack {
     }
 
     private static String idOf(Entity entity) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(entity.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         return id == null ? "" : id.toString();
     }
 
@@ -527,7 +527,7 @@ public final class SignatureAttack {
         public static void onTargetChange(LivingChangeTargetEvent event) {
             if (!(event.getEntity() instanceof Mob mob)) return;
             if (!mob.getTags().contains(SERVANT_TAG)) return;
-            if (event.getNewTarget() instanceof Player) event.setCanceled(true);
+            if (event.getNewAboutToBeSetTarget() instanceof Player) event.setCanceled(true);
         }
     }
 }
