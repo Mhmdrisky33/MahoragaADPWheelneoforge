@@ -91,7 +91,6 @@ public class WheelEntity extends Entity implements GeoEntity {
         this.startRiding(owner, true);
     }
 
-    @Override
     public boolean shouldRender(double x, double y, double z) {
         return true;
     }
@@ -253,10 +252,10 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_SPIN, 0);
-        this.entityData.define(DATA_OWNER, 0);
-        this.entityData.define(DATA_PERMANENT, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DATA_SPIN, 0);
+        builder.define(DATA_OWNER, 0);
+        builder.define(DATA_PERMANENT, false);
     }
 
     /** 这只是"永久法轮"吗（挂给式神用的那种，不会因为主人没法轮标记而自毁）。 */
@@ -303,9 +302,8 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        Entity owner = this.getOwner();
-        return new ClientboundAddEntityPacket(this, owner == null ? 0 : owner.getId());
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return new ClientboundAddEntityPacket(this, serverEntity);
     }
 
     @Override
