@@ -2,9 +2,6 @@ package com.mahoraga.effect;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 /**
  * 「永恒流血」—— 搬自 Re:Zero（hahueuh）死亡之神那一套。
@@ -22,17 +19,12 @@ public class EternalBleedingEffect extends MobEffect {
         super(category, color);
     }
 
-    @Override
-    public List<ItemStack> getCurativeItems() {
-        return List.of();
-    }
-
     /**
      * 伤害由我们自己按 tick 算，不交给原版的"效果周期"——
      * 那个最短也要 1 秒一跳，而且它只会调用 `applyEffectTick`，控制不了"清无敌帧"这些细节。
      */
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return false;
     }
 }
