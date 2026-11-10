@@ -1,5 +1,6 @@
 package com.mahoraga.skill;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 
@@ -36,7 +37,7 @@ public final class EatAdaptation {
 
     /** 随机正面效果的池子。
      *  🔴 **不含漂浮**（主人明确要求）—— 那玩意儿会把人顶上天，是整人不是奖励。 */
-    private static final List<MobEffect> BUFFS = List.of(
+    private static final List<Holder<MobEffect>> BUFFS = List.of(
             MobEffects.MOVEMENT_SPEED,      // 迅捷
             MobEffects.DIG_SPEED,            // 急迫
             MobEffects.DAMAGE_BOOST,         // 力量
@@ -98,7 +99,7 @@ public final class EatAdaptation {
         return Math.max(0, Math.min(2, (percent - 200) / 200));
     }
 
-    public static MobEffect rollBuff() {
+    public static Holder<MobEffect> rollBuff() {
         return BUFFS.get(RANDOM.nextInt(BUFFS.size()));
     }
 
