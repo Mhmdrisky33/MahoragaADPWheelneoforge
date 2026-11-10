@@ -54,7 +54,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.enchanting.EnchantmentLevelSetEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -1894,7 +1893,7 @@ public final class AdaptationManager {
     @SubscribeEvent
     public static void onEatStart(LivingEntityUseItemEvent.Start event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!event.getItem().getFoodProperties(player) == null) return;
+        if (event.getItem().getFoodProperties(player) == null) return;
 
         int pct;
 
