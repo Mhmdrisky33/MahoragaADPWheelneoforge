@@ -40,7 +40,7 @@ public final class PotionAdaptation {
         if (!isHarmful(effect)) return;
         if (!AdaptationManager.hasEffectImmunity(player, effect.value())) return;
 
-        event.setResult(MobEffectEvent.Applicable.Result.DENY);
+        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 
     /** 免疫之前中的、或者别人给的 → 立刻摘掉。 */
