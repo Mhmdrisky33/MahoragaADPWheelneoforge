@@ -150,7 +150,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_1",
@@ -197,7 +198,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_2",
@@ -244,7 +246,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_3",
@@ -291,7 +294,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_4",
@@ -338,7 +342,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_5",
@@ -385,7 +390,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_6",
@@ -432,7 +438,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         },
         {
           "name": "spoke_7",
@@ -479,7 +486,8 @@
                 0
               ]
             }
-          ]
+          ],
+          "parent": "wheel"
         }
       ]
     }
