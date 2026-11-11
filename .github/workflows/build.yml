@@ -38,3 +38,5 @@ jobs:
 # Visual pass: lift wheel and rebuild radial silhouette
 
 # Rebuild after horizontal wheel geometry correction
+
+# Rebuild after wheel depth and height adjustment
