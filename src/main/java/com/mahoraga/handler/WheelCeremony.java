@@ -1,6 +1,5 @@
 package com.mahoraga.handler;
 
-import com.mahoraga.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -59,7 +58,7 @@ public final class WheelCeremony {
         level.playSound(null, x, y, z, SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 1.0F, 1.0F);
         level.playSound(null, x, y, z, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
                 SoundSource.PLAYERS, 1.0F, 1.0F);
-        level.playSound(null, x, y, z, ModSounds.WHEEL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+        // WheelEntity.spin() starts the wheel sound together with its spin animation.
 
         // ② 金色光柱（不死图腾那套粒子）
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING,
