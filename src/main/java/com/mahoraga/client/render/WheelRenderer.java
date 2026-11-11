@@ -43,7 +43,7 @@ public class WheelRenderer extends GeoEntityRenderer<WheelEntity> {
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - yaw));
 
         // 按体型缩放：主人越宽，轮子越大（1.0 是满尺寸）
-        float scale = Math.max(0.2F, owner.getBbWidth());
+        float scale = Math.max(0.2F, owner.getBbWidth()) * 1.4F;
         poseStack.scale(scale, scale, scale);
 
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender,
