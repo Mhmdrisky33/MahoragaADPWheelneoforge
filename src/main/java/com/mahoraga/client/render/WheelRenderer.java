@@ -13,11 +13,13 @@ import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
 /** 把法轮画在拥有者头顶：跟随朝向、按体型缩放。 */
 public class WheelRenderer extends GeoEntityRenderer<WheelEntity> {
     public WheelRenderer(EntityRendererProvider.Context context) {
         super(context, new DefaultedEntityGeoModel<>(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "wheel")));
+        this.addRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
     @Override
