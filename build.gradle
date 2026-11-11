@@ -61,13 +61,14 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
+// NeoForge 1.21.1 registers Mixin configs via [[mixins]] in neoforge.mods.toml.
+// Keep the legacy MixinConfigs manifest attribute out to avoid duplicate registration.
 tasks.withType(Jar).configureEach {
     manifest.attributes([
         "Specification-Title": mod_id,
         "Specification-Vendor": mod_authors,
         "Specification-Version": "1",
         "Implementation-Title": project.name,
-        "Implementation-Version": project.version,
-        "MixinConfigs": "mixins.${mod_id}.json"
+        "Implementation-Version": project.version
     ])
 }
