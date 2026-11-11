@@ -40,3 +40,5 @@ jobs:
 # Rebuild after horizontal wheel geometry correction
 
 # Rebuild after wheel depth and height adjustment
+
+# Trigger build for the rebuilt upright Mahoraga wheel geometry
