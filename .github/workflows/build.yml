@@ -35,3 +35,4 @@ jobs:
           name: mahoraga-neoforge-1.21.1
           path: build/libs/*.jar
           if-no-files-found: error
+# Visual pass: lift wheel and rebuild radial silhouette
