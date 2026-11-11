@@ -1,4 +1,5 @@
 name: Build Mahoraga NeoForge 1.21.1
+# Trigger build for corrected valid wheel textures
 
 on:
   workflow_dispatch:
