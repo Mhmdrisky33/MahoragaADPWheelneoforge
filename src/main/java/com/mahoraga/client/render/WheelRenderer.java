@@ -36,7 +36,8 @@ public class WheelRenderer extends GeoEntityRenderer<WheelEntity> {
             return;
         }
 
-        poseStack.translate(0.0F, animatable.getBbHeight() / 2.0F, 0.0F);
+        // Lower the wheel slightly so it sits close above the owner's head.
+        poseStack.translate(0.0F, animatable.getBbHeight() / 2.0F - 0.22F, 0.0F);
 
         float yaw = Mth.lerp(partialTick, owner.yBodyRotO, owner.yBodyRot);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - yaw));
