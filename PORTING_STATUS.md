@@ -7,20 +7,20 @@
 - GeckoLib NeoForge 4.7.3
 
 ## Build configuration and Mixin
-- Uses NeoForge ModDevGradle 2.0.107 with Java 21; the Forge-oriented `org.spongepowered.mixin` / MixinGradle plugin is removed.
+- Uses NeoForge ModDevGradle 2.0.107 with Java 21. The Forge-oriented `org.spongepowered.mixin` / MixinGradle plugin is removed.
 - Mixin is preserved: all four Mixin Java classes remain in the source tree and are listed in `mixins.mahoraga.json`.
 - The config is registered through NeoForge 1.21.1's `[[mixins]]` entry in `META-INF/neoforge.mods.toml`.
-- NeoForge 1.21.1 uses official Mojang names at runtime, so this NeoForge config does not need a Forge-style refmap or Mixin annotation processor. The refmap entry and AP were removed from the migration branch after CI showed the AP could not find SRG mappings.
-- Removed the legacy `MixinConfigs` JAR manifest entry from the migration branch so the config has one registration path (the NeoForge TOML).
-- The `META-INF` directory case is corrected for `neoforge.mods.toml` and the access transformer.
+- NeoForge 1.21.1 uses official Mojang names at runtime, so this NeoForge config does not need a Forge-style refmap or Mixin annotation processor.
+- Removed the legacy `MixinConfigs` JAR manifest entry so the config has one registration path (the NeoForge TOML).
+- The case-sensitive `META-INF` directory is correct for `neoforge.mods.toml` and the access transformer.
 
-## Verified build — 2026-11-10
-- GitHub Actions workflow run #291 for branch `fix/neoforge-1.21.1-migration`, commit `9ceb1739e03ee83127a80b5814bbd28da2563ec1`.
-- Java 21 setup succeeded; `./gradlew build --no-daemon` completed with **BUILD SUCCESSFUL** in 19 seconds.
-- The JAR artifact was uploaded as `mahoraga-neoforge-1.21.1` (artifact ID `13736267150`).
+## Verified build — 2026-11-11
+- GitHub Actions PR workflow run #390 for branch `fix/neoforge-1.21.1-migration`, commit `5b74642ca393db1bd2380203be0b94b60a0e3ea8`.
+- Java 21 setup succeeded; `./gradlew build --no-daemon` completed with **BUILD SUCCESSFUL** in 2 minutes 40 seconds.
+- The JAR artifact was uploaded as `mahoraga-neoforge-1.21.1` (artifact ID `13820658620`).
+- The downloaded JAR was inspected: it contains `META-INF/neoforge.mods.toml`, `mixins.mahoraga.json`, and all four expected Mixin class files. The manifest no longer contains `MixinConfigs`; Mixin registration is through the TOML entry.
 - Compilation completed with 34 warnings, mainly deprecated `EventBusSubscriber.bus()` usage and existing deprecation/unchecked-operation notices.
 - Gradle reported `test NO-SOURCE`; this was a compile/package build, not a client or dedicated-server launch test.
-- The manifest cleanup above is a follow-up change after that successful run; CI must run again on the updated branch to verify this last cleanup.
 
 ## Validation still outstanding
 - No Minecraft client launch, dedicated-server launch, in-game Mixin application test, or gameplay/packet test has been run.
@@ -33,10 +33,10 @@
 
 ## Branch and artifact
 - The changes are on the review branch `fix/neoforge-1.21.1-migration` / draft PR #2; `main` has not been modified.
-- The uploaded build artifact is available from [GitHub Actions run #291](https://github.com/Mhmdrisky33/MahoragaADPWheelneoforge/actions/runs/42757693493).
-- The source ZIP is not an installable mod. Use only a verified JAR artifact for testing, and treat it as a test build until client/server runtime checks pass.
+- The verified JAR artifact is available from [GitHub Actions run #390](https://github.com/Mhmdrisky33/MahoragaADPWheelneoforge/actions/runs/42941569455).
+- The source ZIP is not an installable mod. Use only the verified JAR artifact for testing, and treat it as a test build until client/server runtime checks pass.
 
 ## Next steps
-1. Re-run CI after the manifest cleanup and confirm the JAR still packages the Mixin config and classes.
-2. Run the mod on both client and dedicated server and verify all four Mixins apply.
+1. Run the client and dedicated server, then verify all four Mixins apply without startup or injection errors.
+2. Test the key gameplay systems, resources, and custom payloads in-game.
 3. Obtain the complete original Java source set (or explicitly accept the reduced feature set) before claiming a full port.
