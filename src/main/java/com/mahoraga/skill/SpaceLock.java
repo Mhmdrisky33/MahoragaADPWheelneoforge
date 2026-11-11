@@ -1,9 +1,10 @@
 package com.mahoraga.skill;
 
 import com.mahoraga.MahoragaMod;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -34,8 +35,9 @@ public final class SpaceLock {
     }
 
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
-        LivingEntity entity = event.getEntity();
+    public static void onLivingTick(EntityTickEvent.Post event) {
+        Entity eventEntity = event.getEntity();
+        if (!(eventEntity instanceof LivingEntity entity)) return;
         if (entity.level().isClientSide) return;
 
         Lock lock = LOCKS.get(entity.getUUID());

@@ -3,6 +3,8 @@ name: Build Mahoraga NeoForge 1.21.1
 on:
   workflow_dispatch:
   push:
+    branches: [ main, master, fix/neoforge-1.21.1-migration ]
+  pull_request:
     branches: [ main, master ]
 
 permissions:

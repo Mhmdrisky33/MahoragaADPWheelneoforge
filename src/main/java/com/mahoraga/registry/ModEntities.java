@@ -20,7 +20,7 @@ public final class ModEntities {
             () -> EntityType.Builder.<WheelEntity>of(WheelEntity::new, MobCategory.MISC)
                     .sized(1.0F, 0.5F)
                     .clientTrackingRange(10)
-                    .build(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "wheel")));
+                    .build(MahoragaMod.MOD_ID + ":wheel"));
 
     /**
      * 剑气 —— 普通攻击挥出去的那道飞行斩击。
@@ -31,7 +31,7 @@ public final class ModEntities {
                     .sized(0.6F, 0.6F)
                     .setUpdateInterval(1)
                     .clientTrackingRange(8)
-                    .build(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "slash")));
+                    .build(MahoragaMod.MOD_ID + ":slash"));
 
     /**
      * 空间斩 —— 退魔之剑右键放出的巨幅斩击（抄原模组的「世界斩」）。
@@ -43,7 +43,7 @@ public final class ModEntities {
                             .sized(1.0F, 1.0F)
                             .setUpdateInterval(1)
                             .clientTrackingRange(16)
-                            .build(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "world_slash")));
+                            .build(MahoragaMod.MOD_ID + ":world_slash"));
 
     private ModEntities() {
     }

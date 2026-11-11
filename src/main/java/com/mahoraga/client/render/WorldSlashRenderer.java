@@ -73,13 +73,12 @@ public class WorldSlashRenderer extends EntityRenderer<WorldSlashProjectile> {
 
     private static void vertex(VertexConsumer consumer, Matrix4f pose,
                                float x, float z, float u, float v) {
-        consumer.vertex(pose, x, 0.0F, z)
-                .color(1.0F, 1.0F, 1.0F, 1.0F)
-                .uv(u, v)
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(LightTexture.FULL_SKY)
-                .normal(0.0F, 1.0F, 0.0F)
-                .endVertex();
+        consumer.addVertex(pose, x, 0.0F, z)
+                .setColor(255, 255, 255, 255)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(LightTexture.FULL_SKY)
+                .setNormal(0.0F, 1.0F, 0.0F);
     }
 
     @Override

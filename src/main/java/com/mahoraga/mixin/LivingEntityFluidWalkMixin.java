@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityFluidWalkMixin {
-    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true, remap = false)
     private void mahoraga$walkOnLiquid(FluidState state, CallbackInfoReturnable<Boolean> cir) {
         if (state.isEmpty()) return;
 

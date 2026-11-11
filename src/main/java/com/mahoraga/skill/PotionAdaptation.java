@@ -3,12 +3,12 @@ package com.mahoraga.skill;
 import com.mahoraga.MahoragaMod;
 import com.mahoraga.adapt.AdaptationManager;
 import com.mahoraga.handler.WheelHandler;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -35,36 +35,35 @@ public final class PotionAdaptation {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide) return;
 
-        MobEffect effect = event.getEffectInstance().getEffect();
+        Holder<MobEffect> effect = event.getEffectInstance().getEffect();
 
         if (!isHarmful(effect)) return;
-        if (!AdaptationManager.hasEffectImmunity(player, effect)) return;
+        if (!AdaptationManager.hasEffectImmunity(player, effect.value())) return;
 
-        event.setResult(Event.Result.DENY);
+        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 
     /** 免疫之前中的、或者别人给的 → 立刻摘掉。 */
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
 
-        Player player = event.player;
+        Player player = event.getEntity();
         if (player.level().isClientSide) return;
         if (player.tickCount % 10 != 0) return;
         if (!WheelHandler.hasWheel(player)) return;
 
         // 拷一份再遍历：removeEffect 会改原集合
         for (MobEffectInstance instance : new ArrayList<>(player.getActiveEffects())) {
-            MobEffect effect = instance.getEffect();
+            Holder<MobEffect> effect = instance.getEffect();
 
             if (!isHarmful(effect)) continue;
-            if (AdaptationManager.hasEffectImmunity(player, effect)) {
+            if (AdaptationManager.hasEffectImmunity(player, effect.value())) {
                 player.removeEffect(effect);
             }
         }
     }
 
-    private static boolean isHarmful(MobEffect effect) {
-        return !effect.isBeneficial();
+    private static boolean isHarmful(Holder<MobEffect> effect) {
+        return !effect.value().isBeneficial();
     }
 }

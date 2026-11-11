@@ -23,8 +23,7 @@ public class WheelRenderer extends GeoEntityRenderer<WheelEntity> {
     @Override
     public void preRender(PoseStack poseStack, WheelEntity animatable, BakedGeoModel model,
                           MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
-                          float partialTick, int packedLight, int packedOverlay,
-                          float red, float green, float blue, float alpha) {
+                          float partialTick, int packedLight, int packedOverlay, int colour) {
         LivingEntity owner = animatable.getOwner();
 
         if (owner == null) {
@@ -44,6 +43,6 @@ public class WheelRenderer extends GeoEntityRenderer<WheelEntity> {
         poseStack.scale(scale, scale, scale);
 
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender,
-                partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+                partialTick, packedLight, packedOverlay, colour);
     }
 }

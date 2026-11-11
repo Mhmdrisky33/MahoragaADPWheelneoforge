@@ -7,8 +7,9 @@ import com.mahoraga.client.render.WorldSlashRenderer;
 import com.mahoraga.registry.ModEntities;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 @EventBusSubscriber(modid = MahoragaMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -29,8 +30,8 @@ public final class MahoragaClientEvents {
      * `registerAboveAll` = 画在原版 HUD 全部内容**之上**（不会被经验条 / 聊天栏压住）。
      */
     @SubscribeEvent
-    public static void onRegisterOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll("mahoraga_wheel_hud",
-                (gui, graphics, partialTick, screenWidth, screenHeight) -> WheelHud.render(graphics));
+    public static void onRegisterOverlays(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(MahoragaMod.MOD_ID, "mahoraga_wheel_hud"),
+                (graphics, partialTick) -> WheelHud.render(graphics));
     }
 }

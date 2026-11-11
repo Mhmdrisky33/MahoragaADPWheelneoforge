@@ -2,8 +2,10 @@ package com.mahoraga.handler;
 
 import com.mahoraga.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.component.FireworkExplosion;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,7 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import net.minecraft.world.item.FireworkRocketItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -85,18 +87,14 @@ public final class WheelCeremony {
     private static ItemStack fireworkStack() {
         ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
 
-        CompoundTag fireworks = stack.getOrCreateTagElement("Fireworks");
-        fireworks.putByte("Flight", (byte) 1);
-
-        CompoundTag star = new CompoundTag();
-        star.putByte("Type", (byte) FireworkRocketItem.Shape.LARGE_BALL.getId());
-        star.putIntArray("Colors", FIREWORK_COLORS);
-        star.putBoolean("Trail", true);
-        star.putBoolean("Flicker", true);
-
-        ListTag explosions = new ListTag();
-        explosions.add(star);
-        fireworks.put("Explosions", explosions);
+        FireworkExplosion explosion = new FireworkExplosion(
+                FireworkExplosion.Shape.LARGE_BALL,
+                IntArrayList.of(FIREWORK_COLORS),
+                IntArrayList.of(),
+                true,
+                true
+        );
+        stack.set(DataComponents.FIREWORKS, new Fireworks(1, List.of(explosion)));
 
         return stack;
     }

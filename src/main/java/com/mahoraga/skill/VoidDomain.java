@@ -136,7 +136,7 @@ public final class VoidDomain {
             if (victim == player || !victim.isAlive()) continue;
             if (victim.position().distanceToSqr(active.center()) > r2) continue;
 
-            boolean applied = victim.addEffect(new MobEffectInstance(ModEffects.STUN.get(),
+            boolean applied = victim.addEffect(new MobEffectInstance(ModEffects.STUN,
                     STUN_REFRESH, 0, false, false, false));
 
             // 🔴 免疫状态效果的（末影龙 / 凋灵…）走物理定身 —— 属性免疫挡不住动速度

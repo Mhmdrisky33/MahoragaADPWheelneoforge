@@ -18,7 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -314,7 +314,7 @@ public final class WheelSymbiosis {
      *
      * @return true 表示伤害已经转走了（原事件要被取消）
      */
-    public static boolean redirect(Player player, LivingHurtEvent event) {
+    public static boolean redirect(Player player, LivingIncomingDamageEvent event) {
         LivingEntity host = hostOf(player);
         if (host == null || host.isDeadOrDying()) return false;
 
@@ -343,7 +343,7 @@ public final class WheelSymbiosis {
         }
 
         // 进出用同一个音效，靠音调区分（钻进去偏高、冒出来偏低）
-        level.playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE,
+        level.playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE.value(),
                 SoundSource.PLAYERS, 0.8F, in ? 1.25F : 0.85F);
     }
 

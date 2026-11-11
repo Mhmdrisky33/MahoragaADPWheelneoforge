@@ -10,6 +10,7 @@ import com.mahoraga.registry.ModDamageTypes;
 import com.mahoraga.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,7 +23,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.monster.Zombie;
@@ -412,7 +413,7 @@ public final class SignatureAttack {
         level.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z,
                 8 + (int) (power * 3.0F), power * 0.25D, 0.4D, power * 0.25D, 0.02D);
-        level.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE,
+        level.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.PLAYERS, 0.6F, 1.35F);
 
         DamageSource source = ModDamageTypes.spell(player);
@@ -431,7 +432,7 @@ public final class SignatureAttack {
 
     // ==================== 各种手段 ====================
 
-    private static void effect(LivingEntity target, MobEffect effect, int duration, int amplifier) {
+    private static void effect(LivingEntity target, Holder<MobEffect> effect, int duration, int amplifier) {
         target.addEffect(new MobEffectInstance(effect, duration, amplifier));
     }
 
@@ -456,7 +457,7 @@ public final class SignatureAttack {
     /** 卫道士：随便什么攻击都能**破盾**（对玩家目标而言）。 */
     private static void breakShield(LivingEntity target) {
         if (target instanceof Player blocker && blocker.isBlocking()) {
-            blocker.disableShield(true);
+            blocker.disableShield();
         }
     }
 
@@ -487,7 +488,7 @@ public final class SignatureAttack {
 
     /** 女巫：附带一个**随机负面**。 */
     private static void randomDebuff(LivingEntity target) {
-        MobEffect[] pool = {
+        Holder<MobEffect>[] pool = new Holder[]{
                 MobEffects.POISON, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.WEAKNESS,
                 MobEffects.DIG_SLOWDOWN, MobEffects.BLINDNESS, MobEffects.HUNGER,
                 MobEffects.CONFUSION, MobEffects.UNLUCK
@@ -496,14 +497,14 @@ public final class SignatureAttack {
     }
 
     private static String idOf(Entity entity) {
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPES.getKey(entity.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         return id == null ? "" : id.toString();
     }
 
     /** 留着给以后可能用到的判定（免得 import 被 IDE 清掉）。 */
     @SuppressWarnings("unused")
     private static boolean isUndead(LivingEntity entity) {
-        return entity.getMobType() == MobType.UNDEAD;
+        return entity.getType().is(EntityTypeTags.UNDEAD);
     }
 
     // ==================== 僵尸援军的看管 ====================
@@ -526,7 +527,7 @@ public final class SignatureAttack {
         public static void onTargetChange(LivingChangeTargetEvent event) {
             if (!(event.getEntity() instanceof Mob mob)) return;
             if (!mob.getTags().contains(SERVANT_TAG)) return;
-            if (event.getNewTarget() instanceof Player) event.setCanceled(true);
+            if (event.getNewAboutToBeSetTarget() instanceof Player) event.setCanceled(true);
         }
     }
 }

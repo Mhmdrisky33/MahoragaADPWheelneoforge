@@ -4,14 +4,17 @@ import com.mahoraga.handler.BladeHandler;
 import com.mahoraga.skill.BladeAbilities;
 import com.mahoraga.skill.MiningAdaptation;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +32,11 @@ import java.util.List;
  */
 public class MahoragaBladeItem extends SwordItem {
     public MahoragaBladeItem(Tier tier, int damage, float speed, Properties properties) {
-        super(tier, damage, speed, properties);
+        super(tier, properties
+                .attributes(SwordItem.createAttributes(tier, damage, speed))
+                .component(DataComponents.TOOL, new Tool(
+                        List.of(Tool.Rule.minesAndDrops(BuiltInRegistries.BLOCK.stream().toList(), MiningAdaptation.UNIVERSAL_SPEED)),
+                        MiningAdaptation.UNIVERSAL_SPEED, 0)));
     }
 
     /**
@@ -39,7 +46,12 @@ public class MahoragaBladeItem extends SwordItem {
      * （比每 tick 往上塞 `Unbreakable` 标签干净，也不占同步带宽。）
      */
     @Override
-    public boolean canBeDepleted() {
+    public boolean isDamageable(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
         return false;
     }
 
@@ -63,17 +75,12 @@ public class MahoragaBladeItem extends SwordItem {
     }
 
     @Override
-    public boolean isCorrectToolForDrops(BlockState state) {
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         return true;
     }
 
     @Override
-    public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
-        return true;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (BladeHandler.isBroken(stack)) {
             tooltip.add(Component.translatable("item.mahoraga.mahoraga_blade.broken")
                     .withStyle(ChatFormatting.DARK_RED));
@@ -89,7 +96,7 @@ public class MahoragaBladeItem extends SwordItem {
                 .withStyle(ChatFormatting.DARK_PURPLE));
         tooltip.add(Component.translatable("item.mahoraga.mahoraga_blade.skin")
                 .withStyle(ChatFormatting.RED));
-        super.appendHoverText(stack, level, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     // ==================== 右键 = 特殊能力 ====================

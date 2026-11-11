@@ -9,11 +9,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -59,13 +59,13 @@ public final class UndeadExecute {
     }
 
     /** 由 {@code AdaptationManager#onHurt} 在最后一步调用。 */
-    public static void tryExecute(Player player, LivingEntity victim, LivingHurtEvent event) {
+    public static void tryExecute(Player player, LivingEntity victim, LivingIncomingDamageEvent event) {
         ItemStack blade = player.getMainHandItem();
 
         if (!blade.is(ModItems.MAHORAGA_BLADE.get())) return;
         if (BladeHandler.isBroken(blade)) return;
 
-        if (victim.getMobType() != MobType.UNDEAD) return;
+        if (!victim.getType().is(EntityTypeTags.UNDEAD)) return;
         if (victim.isDeadOrDying()) return;
 
         long now = player.level().getGameTime();

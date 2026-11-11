@@ -90,9 +90,9 @@ public class SlashProjectile extends Projectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_ROLL, 0.0F);
-        this.entityData.define(DATA_LENGTH, MAX_LENGTH);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DATA_ROLL, 0.0F);
+        builder.define(DATA_LENGTH, MAX_LENGTH);
     }
 
     public float getRoll() {

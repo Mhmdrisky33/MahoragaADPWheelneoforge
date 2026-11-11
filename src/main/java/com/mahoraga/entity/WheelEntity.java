@@ -11,19 +11,21 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -97,8 +99,8 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    public double getMyRidingOffset() {
-        return 0.5D;
+    public Vec3 getVehicleAttachmentPoint(Entity vehicle) {
+        return new Vec3(0.0D, 0.5D, 0.0D);
     }
 
     @Nullable
@@ -253,10 +255,10 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_SPIN, 0);
-        this.entityData.define(DATA_OWNER, 0);
-        this.entityData.define(DATA_PERMANENT, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DATA_SPIN, 0);
+        builder.define(DATA_OWNER, 0);
+        builder.define(DATA_PERMANENT, false);
     }
 
     /** 这只是"永久法轮"吗（挂给式神用的那种，不会因为主人没法轮标记而自毁）。 */
@@ -303,9 +305,9 @@ public class WheelEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
         Entity owner = this.getOwner();
-        return new ClientboundAddEntityPacket(this, owner == null ? 0 : owner.getId());
+        return new ClientboundAddEntityPacket(this, serverEntity, owner == null ? 0 : owner.getId());
     }
 
     @Override

@@ -8,7 +8,12 @@ import com.mahoraga.adapt.Track;
 import com.mahoraga.registry.ModItems;
 import com.mahoraga.skill.MiningAdaptation;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,8 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -54,12 +59,11 @@ public final class BladeHandler {
     }
 
     public static boolean isBroken(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(BROKEN_TAG);
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean(BROKEN_TAG);
     }
 
     private static void setBroken(ItemStack stack, boolean broken) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putBoolean(BROKEN_TAG, broken);
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(BROKEN_TAG, broken));
     }
 
     private static ItemStack findIntactBlade(Player player) {
@@ -81,9 +85,15 @@ public final class BladeHandler {
     }
 
     /** 造一把新的退魔之剑 —— **自带亡灵杀手 V**。 */
+    /** Stack contoh untuk creative tab; enchantment dinamis dipasang saat berada di inventory pemain. */
     public static ItemStack newBlade() {
+        return new ItemStack(ModItems.MAHORAGA_BLADE.get());
+    }
+
+    public static ItemStack newBlade(Player player) {
         ItemStack stack = new ItemStack(ModItems.MAHORAGA_BLADE.get());
-        stack.enchant(Enchantments.SMITE, SMITE_LEVEL);
+        Holder<Enchantment> smite = player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SMITE);
+        EnchantmentHelper.updateEnchantments(stack, enchantments -> enchantments.set(smite, SMITE_LEVEL));
         return stack;
     }
 
@@ -99,21 +109,24 @@ public final class BladeHandler {
     private static void ensureEnchants(Player player, ItemStack stack) {
         int fortune = MiningAdaptation.fortune(player);
 
-        boolean smiteOk = stack.getEnchantmentLevel(Enchantments.SMITE) >= SMITE_LEVEL;
-        boolean fortuneOk = stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE) == fortune;
+        var enchantmentRegistry = player.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> smite = enchantmentRegistry.getOrThrow(Enchantments.SMITE);
+        Holder<Enchantment> fortuneEnchantment = enchantmentRegistry.getOrThrow(Enchantments.FORTUNE);
+        boolean smiteOk = EnchantmentHelper.getItemEnchantmentLevel(smite, stack) >= SMITE_LEVEL;
+        boolean fortuneOk = EnchantmentHelper.getItemEnchantmentLevel(fortuneEnchantment, stack) == fortune;
 
         if (smiteOk && fortuneOk) return;
 
-        Map<Enchantment, Integer> enchants = new LinkedHashMap<>();
-        enchants.put(Enchantments.SMITE, SMITE_LEVEL);
-        if (fortune > 0) enchants.put(Enchantments.BLOCK_FORTUNE, fortune);
-
-        EnchantmentHelper.setEnchantments(enchants, stack);
+        EnchantmentHelper.updateEnchantments(stack, enchants -> {
+            enchants.set(smite, SMITE_LEVEL);
+            if (fortune > 0) enchants.set(fortuneEnchantment, fortune);
+            else enchants.removeIf(holder -> holder.is(Enchantments.FORTUNE));
+        });
     }
 
     /** 把剑塞进背包；塞不下就丢在脚边（绝不能凭空消失）。 */
     private static void give(Player player) {
-        ItemStack stack = newBlade();
+        ItemStack stack = newBlade(player);
 
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
@@ -273,17 +286,15 @@ public final class BladeHandler {
      * 诊断用：和 {@link #skinMode} 的结果对照，就能看出断在"判据"还是"写入"。
      */
     public static int skinTag(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getInt("CustomModelData") : 0;
+        return stack.getOrDefault(DataComponents.CUSTOM_MODEL_DATA, CustomModelData.DEFAULT).value();
     }
 
-    private static void setSkin(ItemStack stack, int mode) {        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.getInt("CustomModelData") == mode) return;      // 没变，别触发同步
-
+    private static void setSkin(ItemStack stack, int mode) {
+        if (skinTag(stack) == mode) return; // 没变，别触发同步
         if (mode <= SKIN_NONE) {
-            tag.remove("CustomModelData");
+            stack.remove(DataComponents.CUSTOM_MODEL_DATA);
         } else {
-            tag.putInt("CustomModelData", mode);
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(mode));
         }
     }
 

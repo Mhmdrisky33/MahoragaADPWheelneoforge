@@ -54,7 +54,7 @@ public final class DarkSightRenderer {
         ClientLevel level = mc.level;
         if (level == null || mc.player == null) return;
 
-        float partialTick = event.getPartialTick();
+        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
         Vec3 camera = event.getCamera().getPosition();
         PoseStack pose = event.getPoseStack();
         EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
