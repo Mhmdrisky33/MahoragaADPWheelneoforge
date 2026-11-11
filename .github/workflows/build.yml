@@ -42,3 +42,5 @@ jobs:
 # Rebuild after wheel depth and height adjustment
 
 # Trigger build for the rebuilt upright Mahoraga wheel geometry
+
+# Trigger build for refined compact wheel hub
