@@ -56,7 +56,7 @@ public class WheelEntity extends Entity implements GeoEntity {
             SynchedEntityData.defineId(WheelEntity.class, EntityDataSerializers.BOOLEAN);
 
     private static final RawAnimation SPIN = RawAnimation.begin().thenPlay("misc.spin");
-    private static final int SPIN_DURATION = 20;
+    private static final int SPIN_DURATION = 84; // 4.2 seconds: match wheel.ogg
 
     /** 长时间找不到主人就自毁（10 秒），让 handler 重新生成一只。 */
     private static final int ORPHAN_TIMEOUT = 200;
