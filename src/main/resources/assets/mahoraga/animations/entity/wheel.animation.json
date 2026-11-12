@@ -1,21 +1,17 @@
 {
-	"format_version": "1.8.0",
-	"animations": {
-		"misc.spin": {
-			"animation_length": 1,
-			"bones": {
-				"wheel": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"1.0": {
-							"vector": [0, 360, 0]
-						}
-					}
-				}
-			}
-		}
-	},
-	"geckolib_format_version": 2
+  "format_version": "1.8.0",
+  "animations": {
+    "misc.spin": {
+      "animation_length": 4.205714,
+      "bones": {
+        "wheel": {
+          "rotation": {
+            "0.0": { "vector": [0, 0, 0] },
+            "4.205714": { "vector": [0, 360, 0] }
+          }
+        }
+      }
+    }
+  },
+  "geckolib_format_version": 2
 }

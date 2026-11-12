@@ -1,6 +1,5 @@
 package com.mahoraga.handler;
 
-import com.mahoraga.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,7 +23,7 @@ import net.minecraft.world.item.Items;
  * |---|---|
  * | 一声闷响 | `ANVIL_LAND`（铁砧落地） |
  * | "你做到了" | `UI_TOAST_CHALLENGE_COMPLETE`（原版**成就达成**的那个音效） |
- * | 轮子转起来 | `ModSounds.WHEEL` + 让头顶的法轮真的转一圈（{@link WheelHandler#spin}） |
+ * | 轮子转起来 | 由 `WheelHandler#spin` 同步触发动画和声音 |
  * | 金色光柱 | `TOTEM_OF_UNDYING` 粒子（**不死图腾**同款，60 粒撒一圈） |
  * | 眼前一黑 | `DARKNESS` 1.5 秒 —— 先黑一下，再"豁然开朗"，仪式感就在这里 |
  * | 三发烟花 | 玩家周围斜着放，会自己飞上去炸 |
@@ -57,7 +56,6 @@ public final class WheelCeremony {
         level.playSound(null, x, y, z, SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 1.0F, 1.0F);
         level.playSound(null, x, y, z, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
                 SoundSource.PLAYERS, 1.0F, 1.0F);
-        level.playSound(null, x, y, z, ModSounds.WHEEL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
         // ② 金色光柱（不死图腾那套粒子）
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING,
